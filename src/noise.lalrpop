@@ -3,7 +3,13 @@ use ast;
 grammar;
 
 pub Noise: ast::Operator = {
-    "{" r#""hello""# ":" <Operator> r#""world!""# "}"
+    "{" Literal ":" <Operator> Literal "}"
+};
+
+Literal: String = {
+    // TODO vmx 2017-11-03: Match literal as implemented in the current parser (with escaping)
+    r#"""# <r#"\w+"#> r#"""# => String::from(<>),
+
 };
 
 Operator: ast::Operator = {
