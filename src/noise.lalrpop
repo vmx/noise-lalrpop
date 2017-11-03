@@ -1,11 +1,11 @@
-use ast::{Operator};
+use ast;
 
 grammar;
 
-pub Noise: Operator = {
+pub Noise: ast::Operator = {
     "{" r#""hello""# ":" <Operator> r#""world!""# "}"
 };
 
-Operator: Operator = {
-    "==" => Operator::Equal,
+Operator: ast::Operator = {
+    "==" => ast::Operator::Equal,
 };
