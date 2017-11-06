@@ -22,7 +22,6 @@ KeyOperatorValue: ast::Token = {
 };
 
 Value: ast::Token = {
-    //Literal => Box::new(ast::Token::Literal(<>)),
     "{" <KeyOperatorValue> "}"
 };
 
