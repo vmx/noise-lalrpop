@@ -2,16 +2,28 @@ use ast;
 
 grammar;
 
-pub Noise: ast::Operator = {
-    "find" "{" <KeyOperatorValue> "}"
+pub Noise: ast::Token = {
+    "find" "{" <KeyValue> "}"
 };
 
-KeyOperatorValue: ast::Operator = {
+KeyValue: ast::Token = {
+    <key:Literal> ":" <value:Value> => {
+        ast::Token::Object(key, Box::new(value))
+    },
+    KeyOperatorValue,
+};
+
+KeyOperatorValue: ast::Token = {
     <key:Literal> ":" <op:Operator> <value:Literal> => {
         match op {
-            ast::OperatorType::Equal => ast::Operator::Equal(key, value)
+            ast::OperatorType::Equal => ast::Token::Equal(key, value)
         }
     }
+};
+
+Value: ast::Token = {
+    //Literal => Box::new(ast::Token::Literal(<>)),
+    "{" <KeyOperatorValue> "}"
 };
 
 Literal: String = {
