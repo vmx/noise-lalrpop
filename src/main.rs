@@ -13,7 +13,13 @@ fn noise() {
                r#"Ok(And(Equal("hello", "world"), Equal("another", "one")))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world", "another": == "one", "third": == "thing"}"#)),
                r#"Ok(And(And(Equal("hello", "world"), Equal("another", "one")), Equal("third", "thing")))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world", "another": == "one" || "third": == "thing"}"#)),
+               r#"Ok(Or(And(Equal("hello", "world"), Equal("another", "one")), Equal("third", "thing")))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world" || "another": == "one", "third": == "thing"}"#)),
+               r#"Ok(Or(Equal("hello", "world"), And(Equal("another", "one"), Equal("third", "thing"))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world" || "another": == "one" || "third": == "thing"}"#)),
+               r#"Ok(Or(Or(Equal("hello", "world"), Equal("another", "one")), Equal("third", "thing")))"#);
 
-    let out = noise::parse_Noise(r#"find {"hello": == "world", "another": == "one", "third": == "thing"}"#);
+    let out = noise::parse_Noise(r#"find {"hello": == "world", "another": == "one" || "third": == "thing"}"#);
     println!("out: {:?}", out);
 }

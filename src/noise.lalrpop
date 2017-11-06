@@ -3,7 +3,7 @@ use ast;
 grammar;
 
 pub Noise: ast::Token = {
-    "find" "{" <Bool<AndBool, KeyValue>> "}"
+    "find" "{" <OrBool> "}"
 };
 
 KeyValue: ast::Token = {
@@ -39,14 +39,22 @@ Operator: ast::OperatorType = {
 };
 
 
-AndBool: ast::BoolType = {
+AndBool = Bool<AndBoolOp, KeyValue>;
+OrBool = Bool<OrBoolOp, AndBool>;
+
+AndBoolOp: ast::BoolType = {
     "," => ast::BoolType::And,
+};
+
+OrBoolOp: ast::BoolType = {
+    "||" => ast::BoolType::Or,
 };
 
 Bool<BoolOp, NextBool>: ast::Token = {
   <left:Bool<BoolOp, NextBool>> <op:BoolOp> <right:NextBool> => {
      match op {
          ast::BoolType::And => ast::Token::And(Box::new(left), Box::new(right)),
+         ast::BoolType::Or => ast::Token::Or(Box::new(left), Box::new(right)),
      }
   },
   NextBool,

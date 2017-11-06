@@ -6,6 +6,7 @@ pub enum OperatorType {
 #[derive(Debug)]
 pub enum BoolType {
     And,
+    Or,
 }
 
 #[derive(Debug, PartialEq)]
@@ -16,4 +17,5 @@ pub enum Token {
     Equal(String, String),
 
     And(Box<Token>, Box<Token>),
+    Or(Box<Token>, Box<Token>),
 }
