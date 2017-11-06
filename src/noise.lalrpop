@@ -3,7 +3,11 @@ use ast;
 grammar;
 
 pub Noise: ast::Operator = {
-    "{" <key:Literal> ":" <op:Operator> <value:Literal> "}" => {
+    "{" <KeyOperatorValue> "}"
+};
+
+KeyOperatorValue: ast::Operator = {
+    <key:Literal> ":" <op:Operator> <value:Literal> => {
         match op {
             ast::OperatorType::Equal => ast::Operator::Equal(key, value)
         }
