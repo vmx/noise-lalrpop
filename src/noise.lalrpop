@@ -7,9 +7,11 @@ pub Noise: ast::Token = {
 };
 
 KeyValue: ast::Token = {
+    // This one recurses down nested objects
     <key:Literal> ":" <value:Value> => {
         ast::Token::Object(key, Box::new(value))
     },
+    // This matches once we hit an operator
     KeyOperatorValue,
 };
 
