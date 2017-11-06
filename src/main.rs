@@ -1,15 +1,12 @@
 pub mod noise;
 pub mod ast;
 
-use ast::Token;
-
 #[test]
 fn noise() {
-    assert_eq!(noise::parse_Noise(r#"find {"hello": == "world"}"#).unwrap(),
-               Token::Equal("hello".to_string(), "world".to_string()));
-    assert_eq!(noise::parse_Noise(r#"find {"hello": {"nested": == "world"}}"#).unwrap(),
-               Token::Object("hello".to_string(),
-                             Box::new(Token::Equal("nested".to_string(), "world".to_string()))));
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"}"#)),
+               r#"Ok(Equal("hello", "world"))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": {"nested": == "world"}}"#)),
+               r#"Ok(Object("hello", Equal("nested", "world")))"#);
 
     let out = noise::parse_Noise(r#"find {"hello": {"nested": == "world"}}"#);
     println!("out: {:?}", out);
