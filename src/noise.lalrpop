@@ -22,7 +22,7 @@ KeyOperatorValue: ast::Token = {
 };
 
 Value: ast::Token = {
-    "{" <KeyOperatorValue> "}"
+    "{" <KeyValue> "}",
 };
 
 Literal: String = {
