@@ -3,9 +3,9 @@ pub mod ast;
 
 #[test]
 fn noise() {
-    //let out = noise::parse_Noise(r#"{"hello":"world!"}"#);
-    let out = noise::parse_Noise(r#"{"hello": == "world"}"#);
-    //assert!(noise::parse_Noise(r#"{"hello":"world!"}"#).is_ok());
+    assert_eq!(noise::parse_Noise(r#"find {"hello": == "world"}"#).unwrap(),
+    ast::Operator::Equal("hello".to_string(), "world".to_string()));
+    let out = noise::parse_Noise(r#"find {"hello": == "world"}"#);
     println!("out: {:?}", out);
 }
 //fn calculator1() {

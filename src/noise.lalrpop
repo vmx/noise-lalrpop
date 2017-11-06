@@ -3,7 +3,7 @@ use ast;
 grammar;
 
 pub Noise: ast::Operator = {
-    "{" <KeyOperatorValue> "}"
+    "find" "{" <KeyOperatorValue> "}"
 };
 
 KeyOperatorValue: ast::Operator = {
