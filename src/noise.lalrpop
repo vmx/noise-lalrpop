@@ -13,6 +13,8 @@ KeyValue: ast::Token = {
     },
     // This matches once we hit an operator
     KeyOperatorValue,
+    // Allow parenthesis
+    "(" <OrBool> ")",
 };
 
 KeyOperatorValue: ast::Token = {
