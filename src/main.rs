@@ -24,6 +24,8 @@ fn noise() {
                r#"Ok(Or(Equal("hello", "world"), And(Equal("another", "one"), Equal("third", "thing"))))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world" || "another": == "one" || "third": == "thing"}"#)),
                r#"Ok(Or(Or(Equal("hello", "world"), Equal("another", "one")), Equal("third", "thing")))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world" && "another": == "one" || "third": == "thing"}"#)),
+               r#"Ok(Or(And(Equal("hello", "world"), Equal("another", "one")), Equal("third", "thing")))"#);
 
     // Parenthesis
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world", ("another": == "one" || "third": == "thing")}"#)),

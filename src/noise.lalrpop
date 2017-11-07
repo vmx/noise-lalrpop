@@ -46,6 +46,7 @@ OrBool = Bool<OrBoolOp, AndBool>;
 
 AndBoolOp: ast::BoolType = {
     "," => ast::BoolType::And,
+    "&&" => ast::BoolType::And,
 };
 
 OrBoolOp: ast::BoolType = {
