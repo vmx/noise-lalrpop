@@ -13,6 +13,7 @@ pub enum BoolType {
 pub enum Token {
     Literal(String),
     Object(String, Box<Token>),
+    Boost(u64, Box<Token>),
 
     Equal(String, String),
 

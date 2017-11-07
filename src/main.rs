@@ -33,6 +33,18 @@ fn noise() {
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world", ("another": == "one", "third": == "thing")}"#)),
                r#"Ok(And(Equal("hello", "world"), And(Equal("another", "one"), Equal("third", "thing"))))"#);
 
-    let out = noise::parse_Noise(r#"find {"hello": == "world", ("another": == "one" || "third": == "thing")}"#);
+    // Boost
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"^2}"#)),
+               r#"Ok(Boost(2, Equal("hello", "world")))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"^2, "another": == "one"}"#)),
+               r#"Ok(And(Boost(2, Equal("hello", "world")), Equal("another", "one")))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {("hello": == "world")^2}"#)),
+               r#"Ok(Boost(2, Equal("hello", "world")))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"}^2"#)),
+               r#"Ok(Boost(2, Equal("hello", "world")))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": {"nested": == "world"}^2}"#)),
+               r#"Ok(Object("hello", Boost(2, Equal("nested", "world"))))"#);
+
+    let out = noise::parse_Noise(r#"find {"hello": == "world"}^2"#);
     println!("out: {:?}", out);
 }
