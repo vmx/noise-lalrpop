@@ -5,48 +5,34 @@ use ast;
 grammar;
 
 pub Noise: ast::Token = {
-    "find" <Object>
+    "find" <BoostHelper<Object>>
 };
 
 KeyValue: ast::Token = {
     // This one recurses down nested objects
-    <key:Literal> ":" <value:Object> => {
+    <key:Literal> ":" <value:BoostHelper<Object>> => {
         ast::Token::Object(key, Box::new(value))
     },
     // This matches once we hit an operator
-    KeyOperatorValue,
+    BoostHelper<KeyOperatorValue>,
     // Allow parenthesis
-    Parenthesis,
+    BoostHelper<Parenthesis>,
 };
 
 KeyOperatorValue: ast::Token = {
-    <key:Literal> ":" <op:Operator> <value:Literal> <boost:Boost?> => {
-        let token = match op {
+    <key:Literal> ":" <op:Operator> <value:Literal> => {
+        match op {
             ast::OperatorType::Equal => ast::Token::Equal(key, value)
-        };
-        match boost {
-            Some(bb) => ast::Token::Boost(bb, Box::new(token)),
-            None => token,
         }
     }
 };
 
 Parenthesis: ast::Token = {
-    "(" <token:OrBool> ")" <boost:Boost?> => {
-        match boost {
-            Some(bb) => ast::Token::Boost(bb, Box::new(token)),
-            None => token,
-        }
-    }
+    "(" <OrBool> ")"
 };
 
 Object: ast::Token = {
-    "{" <token:OrBool> "}" <boost:Boost?> => {
-        match boost {
-            Some(bb) => ast::Token::Boost(bb, Box::new(token)),
-            None => token,
-        }
-    }
+    "{" <OrBool> "}"
 };
 
 Literal: String = {
@@ -60,6 +46,15 @@ Boost: u64 = {
     "^" <r"[0-9]+"> => u64::from_str(<>).unwrap()
 };
 
+// Returns a token wrapped in a boost if there was one
+BoostHelper<T>: T = {
+    <token:T> <boost:Boost?> => {
+        match boost {
+            Some(bb) => ast::Token::Boost(bb, Box::new(token)),
+            None => token,
+        }
+    }
+};
 
 
 Operator: ast::OperatorType = {
