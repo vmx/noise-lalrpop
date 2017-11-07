@@ -3,12 +3,12 @@ use ast;
 grammar;
 
 pub Noise: ast::Token = {
-    "find" "{" <OrBool> "}"
+    "find" <Object>
 };
 
 KeyValue: ast::Token = {
     // This one recurses down nested objects
-    <key:Literal> ":" <value:Value> => {
+    <key:Literal> ":" <value:Object> => {
         ast::Token::Object(key, Box::new(value))
     },
     // This matches once we hit an operator
@@ -25,8 +25,8 @@ KeyOperatorValue: ast::Token = {
     }
 };
 
-Value: ast::Token = {
-    "{" <KeyValue> "}",
+Object: ast::Token = {
+    "{" <OrBool> "}",
 };
 
 Literal: String = {
