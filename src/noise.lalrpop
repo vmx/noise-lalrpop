@@ -14,13 +14,13 @@ KeyValue: ast::Token = {
         ast::Token::Object(key, Box::new(value))
     },
     // This matches an object where the value is an array
-    <key:Literal> ":" <value:Array> => {
-        ast::Token::Object(key, Box::new(ast::Token::Array(Box::new(value))))
+    <key:Literal> ":" <value:BoostHelper<Array>> => {
+        ast::Token::Object(key, Box::new(value))
     },
     // This matches once we hit an operator within an object
     BoostHelper<KeyOperatorValue>,
     // This matches once we hit an operator within an array
-    ArrayOperatorValue,
+    BoostHelper<ArrayOperatorValue>,
     // Allow parenthesis
     BoostHelper<Parenthesis>,
 };
@@ -51,9 +51,9 @@ Object: ast::Token = {
 
 Array: ast::Token = {
     // Arrays can contain objects...
-    "[" <Object> "]",
+    "[" <BoostHelper<Object>> "]" => ast::Token::Array(Box::new(<>)),
     // ...or operators
-    "[" <OrBool> "]",
+    "[" <OrBool> "]" => ast::Token::Array(Box::new(<>)),
 };
 
 Literal: String = {
