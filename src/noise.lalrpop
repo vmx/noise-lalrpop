@@ -28,10 +28,10 @@ KeyValue: ast::Token = {
 
 KeyOperatorValue: ast::Token = {
     // Within an array the operator might not have a key
-    <key:(<Literal> ":")?> <op:Operator> <value:Literal> => {
+    <key:(<Literal> ":")?> <op:Operator> <value:JsonPrimitive> => {
         match op {
-            ast::OperatorType::Equal => ast::Token::Equal(key, value),
-            ast::OperatorType::WordMatch => ast::Token::WordMatch(key, value),
+            ast::OperatorType::Equal => ast::Token::Equal(key, Box::new(value)),
+            ast::OperatorType::WordMatch => ast::Token::WordMatch(key, Box::new(value)),
         }
     }
 };
@@ -58,8 +58,21 @@ Bind: String = {
 
 Literal: String = {
     // TODO vmx 2017-11-03: Match literal as implemented in the current parser (with escaping)
-    r#"""# <r#"\w+"#> r#"""# => String::from(<>),
+    <with_quotes:r#""[\w\.]+""#> => String::from(&with_quotes[1..with_quotes.len() - 1]),
+};
 
+Float: f64 = {
+    // TODO vmx 2017-11-08: Match numbers as in the JSON spec
+    r"[0-9]+\.[0-9]+" => f64::from_str(<>).unwrap(),
+    r"[0-9]+" => f64::from_str(<>).unwrap(),
+};
+
+JsonPrimitive: ast::Token = {
+    "null" => ast::Token::JsonNull,
+    "false" => ast::Token::JsonBool(false),
+    "true" => ast::Token::JsonBool(true),
+    Float => ast::Token::JsonNumber(<>),
+    Literal => ast::Token::JsonString(<>),
 };
 
 Boost: u64 = {
