@@ -33,11 +33,16 @@ KeyOperatorValue: ast::Token = {
             ast::OperatorType::Equal => ast::Token::Equal(key, Box::new(value)),
             ast::OperatorType::Greater => ast::Token::Greater(key, Box::new(value)),
             ast::OperatorType::GreaterEqual => ast::Token::GreaterEqual(key, Box::new(value)),
+            // TODO vmx 2017-11-08: Make this a proper error instead of a panic
+            ast::OperatorType::Intersect => panic!("error: bounding box operator needs a proper bounding box [W, S, E, N] as value"),
             ast::OperatorType::Less => ast::Token::Less(key, Box::new(value)),
             ast::OperatorType::LessEqual => ast::Token::LessEqual(key, Box::new(value)),
             ast::OperatorType::WordMatch => ast::Token::WordMatch(key, Box::new(value)),
         }
-    }
+    },
+    <key:(<Literal> ":")?> "&&" <bbox:Bbox> => {
+        ast::Token::Intersect(key, Box::new(bbox))
+    },
 };
 
 Parenthesis: ast::Token = {
@@ -79,6 +84,12 @@ JsonPrimitive: ast::Token = {
     Literal => ast::Token::JsonString(<>),
 };
 
+Bbox: ast::Token = {
+    "[" <ww:Number> "," <ss:Number> "," <ee:Number> "," <nn:Number> "]" => {
+        ast::Token::Bbox(ww, ss, ee, nn)
+    }
+};
+
 Boost: u64 = {
     // TODO vmx 2017-11-07: Add proper error handling
     "^" <r"[0-9]+"> => u64::from_str(<>).unwrap()
@@ -96,6 +107,7 @@ BoostHelper<T>: T = {
 
 
 Operator: ast::OperatorType = {
+    "&&" => ast::OperatorType::Intersect,
     "==" => ast::OperatorType::Equal,
     ">" => ast::OperatorType::Greater,
     ">=" => ast::OperatorType::GreaterEqual,

@@ -104,6 +104,8 @@ fn noise() {
                r#"Ok(Less(Some("hello"), JsonNumber(10)))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": <= 10}"#)),
                r#"Ok(LessEqual(Some("hello"), JsonNumber(10)))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": && [10, 20, 30, 40]}"#)),
+               r#"Ok(Intersect(Some("hello"), Bbox(10, 20, 30, 40)))"#);
 
     let out = noise::parse_Noise(r#"find {"hello": ~= "world"}"#);
     println!("out: {:?}", out);

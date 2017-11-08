@@ -3,6 +3,7 @@ pub enum OperatorType {
     Equal,
     Greater,
     GreaterEqual,
+    Intersect,
     Less,
     LessEqual,
     WordMatch,
@@ -17,6 +18,7 @@ pub enum BoolType {
 #[derive(Debug, PartialEq)]
 pub enum Token {
     Array(Box<Token>),
+    Bbox(f64, f64, f64, f64),
     Bind(String, Box<Token>),
     JsonBool(bool),
     JsonNull,
@@ -30,6 +32,7 @@ pub enum Token {
     Equal(Option<String>, Box<Token>),
     Greater(Option<String>, Box<Token>),
     GreaterEqual(Option<String>, Box<Token>),
+    Intersect(Option<String>, Box<Token>),
     Less(Option<String>, Box<Token>),
     LessEqual(Option<String>, Box<Token>),
     WordMatch(Option<String>, Box<Token>),
