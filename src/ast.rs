@@ -1,6 +1,7 @@
 #[derive(Debug)]
 pub enum OperatorType {
     Equal,
+    WordMatch,
 }
 
 #[derive(Debug)]
@@ -19,6 +20,7 @@ pub enum Token {
 
     // If the key is `None` then it's an operator within an array
     Equal(Option<String>, String),
+    WordMatch(Option<String>, String),
 
     And(Box<Token>, Box<Token>),
     Or(Box<Token>, Box<Token>),

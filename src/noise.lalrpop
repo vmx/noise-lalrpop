@@ -30,7 +30,8 @@ KeyOperatorValue: ast::Token = {
     // Within an array the operator might not have a key
     <key:(<Literal> ":")?> <op:Operator> <value:Literal> => {
         match op {
-            ast::OperatorType::Equal => ast::Token::Equal(key, value)
+            ast::OperatorType::Equal => ast::Token::Equal(key, value),
+            ast::OperatorType::WordMatch => ast::Token::WordMatch(key, value),
         }
     }
 };
@@ -79,6 +80,7 @@ BoostHelper<T>: T = {
 
 Operator: ast::OperatorType = {
     "==" => ast::OperatorType::Equal,
+    "~=" => ast::OperatorType::WordMatch,
 };
 
 
