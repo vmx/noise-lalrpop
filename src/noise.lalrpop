@@ -14,8 +14,11 @@ KeyValue: ast::Token = {
         ast::Token::Object(key, Box::new(value))
     },
     // This matches an object where the value is an array
-    <key:Literal> ":" <value:BoostHelper<Array>> => {
-        ast::Token::Object(key, Box::new(value))
+    <key:Literal> ":" <bind:Bind?> <value:BoostHelper<Array>> => {
+        match bind {
+            Some(bb) => ast::Token::Object(key, Box::new(ast::Token::Bind(bb, Box::new(value)))),
+            None => ast::Token::Object(key, Box::new(value))
+        }
     },
     // This matches once we hit an operator within an object
     BoostHelper<KeyOperatorValue>,
@@ -54,6 +57,11 @@ Array: ast::Token = {
     "[" <BoostHelper<Object>> "]" => ast::Token::Array(Box::new(<>)),
     // ...or operators
     "[" <OrBool> "]" => ast::Token::Array(Box::new(<>)),
+};
+
+Bind: String = {
+    // TODO vmx 2017-11-08: Match bind variable name as implemented in the current parser
+    <r#"\w+"#> "::" => String::from(<>)
 };
 
 Literal: String = {

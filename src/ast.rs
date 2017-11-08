@@ -12,6 +12,7 @@ pub enum BoolType {
 #[derive(Debug, PartialEq)]
 pub enum Token {
     Array(Box<Token>),
+    Bind(String, Box<Token>),
     Literal(String),
     Object(String, Box<Token>),
     Boost(u64, Box<Token>),

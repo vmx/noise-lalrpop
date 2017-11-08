@@ -67,6 +67,10 @@ fn noise() {
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": [== "world"^2 || == "another"]}"#)),
               r#"Ok(Object("hello", Array(Or(Boost(2, Equal(None, "world")), Equal(None, "another")))))"#);
 
-    let out = noise::parse_Noise(r#"find {"hello": [== "world"]}"#);
+    // Bind variables
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": xyz::[== "world"]}"#)),
+               r#"Ok(Object("hello", Bind("xyz", Array(Equal(None, "world")))))"#);
+
+    let out = noise::parse_Noise(r#"find {"hello": xyz::[== "world"]}"#);
     println!("out: {:?}", out);
 }
