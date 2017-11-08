@@ -96,6 +96,14 @@ fn noise() {
     // Operators
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": ~= "world"}"#)),
                r#"Ok(WordMatch(Some("hello"), JsonString("world")))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": > 10}"#)),
+               r#"Ok(Greater(Some("hello"), JsonNumber(10)))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": >= 10}"#)),
+               r#"Ok(GreaterEqual(Some("hello"), JsonNumber(10)))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": < 10}"#)),
+               r#"Ok(Less(Some("hello"), JsonNumber(10)))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": <= 10}"#)),
+               r#"Ok(LessEqual(Some("hello"), JsonNumber(10)))"#);
 
     let out = noise::parse_Noise(r#"find {"hello": ~= "world"}"#);
     println!("out: {:?}", out);

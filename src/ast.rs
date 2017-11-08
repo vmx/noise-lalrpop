@@ -1,6 +1,10 @@
 #[derive(Debug)]
 pub enum OperatorType {
     Equal,
+    Greater,
+    GreaterEqual,
+    Less,
+    LessEqual,
     WordMatch,
 }
 
@@ -24,6 +28,10 @@ pub enum Token {
 
     // If the key is `None` then it's an operator within an array
     Equal(Option<String>, Box<Token>),
+    Greater(Option<String>, Box<Token>),
+    GreaterEqual(Option<String>, Box<Token>),
+    Less(Option<String>, Box<Token>),
+    LessEqual(Option<String>, Box<Token>),
     WordMatch(Option<String>, Box<Token>),
 
     And(Box<Token>, Box<Token>),

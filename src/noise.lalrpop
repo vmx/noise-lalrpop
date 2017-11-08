@@ -31,6 +31,10 @@ KeyOperatorValue: ast::Token = {
     <key:(<Literal> ":")?> <op:Operator> <value:JsonPrimitive> => {
         match op {
             ast::OperatorType::Equal => ast::Token::Equal(key, Box::new(value)),
+            ast::OperatorType::Greater => ast::Token::Greater(key, Box::new(value)),
+            ast::OperatorType::GreaterEqual => ast::Token::GreaterEqual(key, Box::new(value)),
+            ast::OperatorType::Less => ast::Token::Less(key, Box::new(value)),
+            ast::OperatorType::LessEqual => ast::Token::LessEqual(key, Box::new(value)),
             ast::OperatorType::WordMatch => ast::Token::WordMatch(key, Box::new(value)),
         }
     }
@@ -93,6 +97,10 @@ BoostHelper<T>: T = {
 
 Operator: ast::OperatorType = {
     "==" => ast::OperatorType::Equal,
+    ">" => ast::OperatorType::Greater,
+    ">=" => ast::OperatorType::GreaterEqual,
+    "<" => ast::OperatorType::Less,
+    "<=" => ast::OperatorType::LessEqual,
     "~=" => ast::OperatorType::WordMatch,
 };
 
