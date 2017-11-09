@@ -5,7 +5,7 @@ use ast;
 grammar;
 
 pub Noise: ast::Token = {
-    "find" <BoostHelper<Object>>
+    "find" <OrBoolObject>
 };
 
 KeyValue: ast::Token = {
@@ -117,8 +117,13 @@ Operator: ast::OperatorType = {
 };
 
 
+// Booleans within objects/arrays
 AndBool = Bool<AndBoolOp, KeyValue>;
 OrBool = Bool<OrBoolOp, AndBool>;
+
+// Boolean for top-level objects
+AndBoolObject = Bool<AndBoolOp, BoostHelper<Object>>;
+OrBoolObject = Bool<OrBoolOp, AndBoolObject>;
 
 AndBoolOp: ast::BoolType = {
     "," => ast::BoolType::And,
