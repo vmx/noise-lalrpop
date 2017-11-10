@@ -6,6 +6,8 @@ pub enum OperatorType {
     Intersect,
     Less,
     LessEqual,
+    NotEqual,
+    NotWordMatch,
     WordMatch,
 }
 
@@ -25,6 +27,7 @@ pub enum Token {
     JsonNumber(f64),
     JsonString(String),
     Literal(String),
+    Not(Box<Token>),
     Object(String, Box<Token>),
     Boost(u64, Box<Token>),
 

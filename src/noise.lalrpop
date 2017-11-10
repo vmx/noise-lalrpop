@@ -10,7 +10,7 @@ pub Noise: ast::Token = {
 
 KeyValue: ast::Token = {
     // This one recurses down nested objects
-    <key:Literal> ":" <value:BoostHelper<Object>> => {
+    <key:Literal> ":" <value:NotHelper<BoostHelper<Object>>> => {
         ast::Token::Object(key, Box::new(value))
     },
     // This matches an object where the value is an array
@@ -37,6 +37,8 @@ KeyOperatorValue: ast::Token = {
             ast::OperatorType::Intersect => panic!("error: bounding box operator needs a proper bounding box [W, S, E, N] as value"),
             ast::OperatorType::Less => ast::Token::Less(key, Box::new(value)),
             ast::OperatorType::LessEqual => ast::Token::LessEqual(key, Box::new(value)),
+            ast::OperatorType::NotEqual => ast::Token::Not(Box::new(ast::Token::Equal(key, Box::new(value)))),
+            ast::OperatorType::NotWordMatch => ast::Token::Not(Box::new(ast::Token::WordMatch(key, Box::new(value)))),
             ast::OperatorType::WordMatch => ast::Token::WordMatch(key, Box::new(value)),
         }
     },
@@ -61,7 +63,7 @@ Object: ast::Token = {
 
 Array: ast::Token = {
     // Arrays can contain objects...
-    "[" <BoostHelper<Object>> "]" => ast::Token::Array(Box::new(<>)),
+    "[" <NotHelper<BoostHelper<Object>>> "]" => ast::Token::Array(Box::new(<>)),
     // ...or operators
     "[" <OrBool> "]" => ast::Token::Array(Box::new(<>)),
 };
@@ -111,6 +113,18 @@ BoostHelper<T>: T = {
     }
 };
 
+Not: () = {
+    "!"
+};
+
+NotHelper<T>: T = {
+    <not:Not?> <token:T> => {
+        match not {
+            Some(nn) => ast::Token::Not(Box::new(token)),
+            None => token,
+        }
+    }
+};
 
 Operator: ast::OperatorType = {
     "&&" => ast::OperatorType::Intersect,
@@ -119,6 +133,8 @@ Operator: ast::OperatorType = {
     ">=" => ast::OperatorType::GreaterEqual,
     "<" => ast::OperatorType::Less,
     "<=" => ast::OperatorType::LessEqual,
+    "!=" => ast::OperatorType::NotEqual,
+    "!~=" => ast::OperatorType::NotWordMatch,
     "~=" => ast::OperatorType::WordMatch,
 };
 
@@ -128,7 +144,7 @@ AndBool = Bool<AndBoolOp, KeyValue>;
 OrBool = Bool<OrBoolOp, AndBool>;
 
 // Boolean for top-level objects
-AndBoolObject = Bool<AndBoolOp, BoostHelper<Object>>;
+AndBoolObject = Bool<AndBoolOp, NotHelper<BoostHelper<Object>>>;
 OrBoolObject = Bool<OrBoolOp, AndBoolObject>;
 
 AndBoolOp: ast::BoolType = {

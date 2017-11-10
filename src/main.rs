@@ -115,6 +115,24 @@ fn noise() {
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": && [10, 20, 30, 40]}"#)),
                r#"Ok(Intersect(Some("hello"), Bbox(10, 20, 30, 40)))"#);
 
-    let out = noise::parse_Noise(r#"find {"hello": ~= "world"}"#);
+    // Not
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find !{"hello": == "world"}"#)),
+               r#"Ok(Not(Equal(Some("hello"), JsonString("world"))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": != "world"}"#)),
+               r#"Ok(Not(Equal(Some("hello"), JsonString("world"))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": !~= "world"}"#)),
+               r#"Ok(Not(WordMatch(Some("hello"), JsonString("world"))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find !({"hello": == "world"})"#)),
+               r#"Ok(Not(Equal(Some("hello"), JsonString("world"))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": !{"nested": == "world"}}"#)),
+               r#"Ok(Object("hello", Not(Equal(Some("nested"), JsonString("world")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": !({"nested": == "world"})}"#)),
+               r#"Ok(Object("hello", Not(Equal(Some("nested"), JsonString("world")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": {"nested": != "world"}}"#)),
+               r#"Ok(Object("hello", Not(Equal(Some("nested"), JsonString("world")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": [!{"array": == "world"}]}"#)),
+               r#"Ok(Object("hello", Array(Not(Equal(Some("array"), JsonString("world"))))))"#);
+
+    let out = noise::parse_Noise(r#"find !{"hello": ~= "world"}"#);
     println!("out: {:?}", out);
 }
