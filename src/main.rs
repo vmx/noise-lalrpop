@@ -28,12 +28,18 @@ fn noise() {
                r#"Ok(Or(And(Equal(Some("hello"), JsonString("world")), Equal(Some("another"), JsonString("one"))), Equal(Some("third"), JsonString("thing"))))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} && {"another": == "one"}"#)),
                r#"Ok(And(Equal(Some("hello"), JsonString("world")), Equal(Some("another"), JsonString("one"))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} || {"another": == "one"} && {"third": == "thing"}"#)),
+               r#"Ok(Or(Equal(Some("hello"), JsonString("world")), And(Equal(Some("another"), JsonString("one")), Equal(Some("third"), JsonString("thing")))))"#);
 
     // Parenthesis
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world", ("another": == "one" || "third": == "thing")}"#)),
                r#"Ok(And(Equal(Some("hello"), JsonString("world")), Or(Equal(Some("another"), JsonString("one")), Equal(Some("third"), JsonString("thing")))))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world", ("another": == "one", "third": == "thing")}"#)),
                r#"Ok(And(Equal(Some("hello"), JsonString("world")), And(Equal(Some("another"), JsonString("one")), Equal(Some("third"), JsonString("thing")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find ({"hello": == "world"})"#)),
+               r#"Ok(Equal(Some("hello"), JsonString("world")))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find ({"hello": == "world"} || {"another": == "one"}) && {"third": == "thing"}"#)),
+               r#"Ok(And(Or(Equal(Some("hello"), JsonString("world")), Equal(Some("another"), JsonString("one"))), Equal(Some("third"), JsonString("thing"))))"#);
 
     // Arrays
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": [{"array": == "world"}]}"#)),

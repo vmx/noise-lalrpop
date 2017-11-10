@@ -49,8 +49,14 @@ Parenthesis: ast::Token = {
     "(" <OrBool> ")"
 };
 
+// Parenthesis around top-level objects
+ParenthesisObject: ast::Token = {
+    "(" <OrBoolObject> ")"
+};
+
 Object: ast::Token = {
-    "{" <OrBool> "}"
+    "{" <OrBool> "}",
+    ParenthesisObject,
 };
 
 Array: ast::Token = {
