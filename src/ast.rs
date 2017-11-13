@@ -42,4 +42,8 @@ pub enum Token {
 
     And(Box<Token>, Box<Token>),
     Or(Box<Token>, Box<Token>),
+
+    All,
+
+    Noise(Box<Token>, Box<Option<Token>>),
 }
