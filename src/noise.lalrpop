@@ -5,7 +5,7 @@ use ast;
 grammar;
 
 pub Noise: ast::Token = {
-    "find" <find:OrBoolObject> <ret:("return" <ReturnObject>)?> => {
+    "find" <find:OrBoolObject> <ret:("return" <Return>)?> => {
         ast::Token::Noise(Box::new(find), Box::new(ret))
     }
 };
@@ -169,21 +169,29 @@ Bool<BoolOp, NextBool>: ast::Token = {
 };
 
 
-ReturnObject: ast::Token = {
+Comma<T>: Vec<T> = {
+   <items:(<T> ",")*> <last:T?> => match last {
+       None => items,
+       Some(last) => {
+           let mut items = items;
+           items.push(last);
+           items
+       },
+   }
+};
+
+Return: ast::Token = {
     "{" <ReturnKeyValue> "}",
-    ReturnValue,
+    "[" <Comma<Return>> "]" => ast::Token::ReturnArray(<>),
+    "." => ast::Token::All,
+    // TODO vmx 2017-11-13: Parse path string the same way the current implementation does
+    <r"\.([\w\._]+|\[\d+\]?)*"> => ast::Token::Path(String::from(<>)),
 };
 
 ReturnKeyValue: ast::Token = {
-    <key:Literal> ":" <value:ReturnObject> => {
+    <key:Literal> ":" <value:Return> => {
         ast::Token::Object(key, Box::new(value))
     }
-};
-
-ReturnValue: ast::Token = {
-    "." => ast::Token::All,
-    // TODO vmx 2017-11-13: Parse path string the same way the current implementation does
-    <r"\.[\w\.\[\]0-9_]+"> => ast::Token::Path(String::from(<>)),
 };
 
 

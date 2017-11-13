@@ -144,6 +144,14 @@ fn noise() {
                r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(Object("nested", Path(".hello")))))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} return {"nested": {"deeper": .hello}}"#)),
                r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(Object("nested", Object("deeper", Path(".hello"))))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} return [.hello]"#)),
+               r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(ReturnArray([Path(".hello")]))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} return [.hello, .another[5], .third.one]"#)),
+               r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(ReturnArray([Path(".hello"), Path(".another[5]"), Path(".third.one")]))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} return [.hello, {"nested": .one}]"#)),
+               r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(ReturnArray([Path(".hello"), Object("nested", Path(".one"))]))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} return {"nested": [.array]}"#)),
+               r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(Object("nested", ReturnArray([Path(".array")])))))"#);
 
     let out = noise::parse_Noise(r#"find {"hello": == "world"} return ."#);
     println!("out: {:?}", out);

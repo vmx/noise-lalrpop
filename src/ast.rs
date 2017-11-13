@@ -45,6 +45,7 @@ pub enum Token {
 
     All,
     Path(String),
+    ReturnArray(Vec<Token>),
 
     Noise(Box<Token>, Box<Option<Token>>),
 }
