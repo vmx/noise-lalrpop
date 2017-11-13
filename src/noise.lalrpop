@@ -184,6 +184,12 @@ Return: ast::Token = {
     "{" <ReturnKeyValue> "}",
     "[" <Comma<Return>> "]" => ast::Token::ReturnArray(<>),
     "." => ast::Token::All,
+    Path,
+    // TODO vmx 2017-11-08: Match bind variable name as implemented in the current parser
+    <bind:r#"\w+"#> <path:Path?> => ast::Token::ReturnBind(String::from(bind), Box::new(path)),
+};
+
+Path: ast::Token = {
     // TODO vmx 2017-11-13: Parse path string the same way the current implementation does
     <r"\.([\w\._]+|\[\d+\]?)*"> => ast::Token::Path(String::from(<>)),
 };

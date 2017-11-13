@@ -152,6 +152,10 @@ fn noise() {
                r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(ReturnArray([Path(".hello"), Object("nested", Path(".one"))]))))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} return {"nested": [.array]}"#)),
                r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(Object("nested", ReturnArray([Path(".array")])))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} return hello"#)),
+               r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(ReturnBind("hello", None))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} return hello.nested[0]"#)),
+               r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(ReturnBind("hello", Some(Path(".nested[0]"))))))"#);
 
     let out = noise::parse_Noise(r#"find {"hello": == "world"} return ."#);
     println!("out: {:?}", out);
