@@ -5,9 +5,14 @@ use ast;
 grammar;
 
 pub Noise: ast::Token = {
-    "find" <find:OrBoolObject> <ret:("return" <Return>)?> => {
+    <find:Find> <ret:("return" <Return>)?> => {
         ast::Token::Noise(Box::new(find), Box::new(ret))
     }
+};
+
+Find: ast::Token = {
+    "find" "{}" => ast::Token::All,
+    "find" <OrBoolObject>,
 };
 
 KeyValue: ast::Token = {

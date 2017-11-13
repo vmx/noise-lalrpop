@@ -4,6 +4,8 @@ pub mod ast;
 #[test]
 fn noise() {
     // Simple
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {}"#)),
+               r#"Ok(Noise(All, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"}"#)),
                r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), None))"#);
 
