@@ -44,6 +44,7 @@ pub enum Token {
     Or(Box<Token>, Box<Token>),
 
     All,
+    Path(String),
 
     Noise(Box<Token>, Box<Option<Token>>),
 }
