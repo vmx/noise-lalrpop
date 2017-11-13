@@ -138,6 +138,8 @@ fn noise() {
                r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(All)))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} return .hello"#)),
                r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(Path(".hello"))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} return .hello[]"#)),
+               r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(Path(".hello[]"))))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} return .hello[0].nested"#)),
                r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), Some(Path(".hello[0].nested"))))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"} return {"nested": .hello}"#)),

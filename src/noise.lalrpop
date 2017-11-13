@@ -191,7 +191,7 @@ Return: ast::Token = {
 
 Path: ast::Token = {
     // TODO vmx 2017-11-13: Parse path string the same way the current implementation does
-    <r"\.([\w\._]+|\[\d+\]?)*"> => ast::Token::Path(String::from(<>)),
+    <r"\.([\w\._]+|\[\d*\]?)*"> => ast::Token::Path(String::from(<>)),
 };
 
 ReturnKeyValue: ast::Token = {
