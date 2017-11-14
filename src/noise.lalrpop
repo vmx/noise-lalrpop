@@ -77,7 +77,7 @@ Array: ast::Token = {
 
 Bind: String = {
     // TODO vmx 2017-11-08: Match bind variable name as implemented in the current parser
-    <r#"\w+"#> "::" => String::from(<>)
+    <r"[^\W\d_]+"> "::" => String::from(<>)
 };
 
 Literal: String = {
@@ -85,10 +85,9 @@ Literal: String = {
     <with_quotes:r#""[\w\.]+""#> => String::from(&with_quotes[1..with_quotes.len() - 1]),
 };
 
+// Based on https://stackoverflow.com/questions/13340717/json-numbers-regular-expression/13340826#13340826
 Number: f64 = {
-    // TODO vmx 2017-11-08: Match numbers as in the JSON spec
-    r"[0-9]+\.[0-9]+" => f64::from_str(<>).unwrap(),
-    r"[0-9]+" => f64::from_str(<>).unwrap(),
+    r"-?(?:0|[1-9]\d*)(?:\.\d+)?(?:[eE][+-]?\d+)?" => f64::from_str(<>).unwrap(),
 };
 
 JsonPrimitive: ast::Token = {
@@ -105,9 +104,8 @@ Bbox: ast::Token = {
     }
 };
 
-Boost: u64 = {
-    // TODO vmx 2017-11-07: Add proper error handling
-    "^" <r"[0-9]+"> => u64::from_str(<>).unwrap()
+Boost: f64 = {
+   "^" <Number>
 };
 
 // Returns a token wrapped in a boost if there was one
@@ -191,7 +189,7 @@ Return: ast::Token = {
     "." => ast::Token::All,
     Path,
     // TODO vmx 2017-11-08: Match bind variable name as implemented in the current parser
-    <bind:r#"\w+"#> <path:Path?> => ast::Token::ReturnBind(String::from(bind), Box::new(path)),
+    <bind:r"[^\W\d_]+"> <path:Path?> => ast::Token::ReturnBind(String::from(bind), Box::new(path)),
 };
 
 Path: ast::Token = {
@@ -204,10 +202,3 @@ ReturnKeyValue: ast::Token = {
         ast::Token::Object(key, Box::new(value))
     }
 };
-
-
-match {
-    r"[0-9]+"
-} else {
-    _
-}
