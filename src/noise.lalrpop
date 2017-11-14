@@ -5,8 +5,8 @@ use ast;
 grammar;
 
 pub Noise: ast::Token = {
-    <find:Find> <ret:("return" <Return>)?> => {
-        ast::Token::Noise(Box::new(find), Box::new(ret))
+    <find:Find> <order:Order?> <ret:("return" <Return>)?> => {
+        ast::Token::Noise(Box::new(find), order.unwrap_or(Vec::new()), Box::new(ret))
     }
 };
 
@@ -169,6 +169,23 @@ Bool<BoolOp, NextBool>: ast::Token = {
      }
   },
   NextBool,
+};
+
+
+Order: Vec<ast::Token> = {
+    "order" <AscDsc> => vec![ast::Token::Order(<>, Box::new(None))],
+    "order" <Comma<OrderCondition>>,
+};
+
+OrderCondition: ast::Token = {
+    <path:Path> <ascdsc:AscDsc?> => {
+        ast::Token::Order(ascdsc.unwrap_or(ast::OrderType::None), Box::new(Some(path)))
+    }
+};
+
+AscDsc: ast::OrderType = {
+    "asc" => ast::OrderType::Asc,
+    "dsc" => ast::OrderType::Dsc,
 };
 
 

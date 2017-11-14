@@ -18,6 +18,13 @@ pub enum BoolType {
 }
 
 #[derive(Debug, PartialEq)]
+pub enum OrderType {
+    None,
+    Asc,
+    Dsc,
+}
+
+#[derive(Debug, PartialEq)]
 pub enum Token {
     Array(Box<Token>),
     Bbox(f64, f64, f64, f64),
@@ -51,5 +58,7 @@ pub enum Token {
     ReturnBind(String, Box<Option<Token>>),
     Default(Box<Token>, Box<Token>),
 
-    Noise(Box<Token>, Box<Option<Token>>),
+    Order(OrderType, Box<Option<Token>>),
+
+    Noise(Box<Token>, Vec<Token>, Box<Option<Token>>),
 }
