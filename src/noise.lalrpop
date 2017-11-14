@@ -194,7 +194,19 @@ Return: ast::Token = {
 
 Path: ast::Token = {
     // TODO vmx 2017-11-13: Parse path string the same way the current implementation does
-    <r"\.([\w\._]+|\[\d*\]?)*"> => ast::Token::Path(String::from(<>)),
+    <path:r"\.([\w\._]+|\[\d*\]?)*"> <default:("default" "=" <Json>)?> => {
+       let pp = ast::Token::Path(String::from(path));
+       match default {
+           Some(dd) => ast::Token::Default(Box::new(dd), Box::new(pp)),
+           None => pp,
+       }
+    }
+};
+
+Json: ast::Token = {
+   JsonPrimitive,
+   "{" <literal:Literal> ":" <json:Json> "}" => ast::Token::JsonObject(literal, Box::new(json)),
+   "[" <Comma<Json>> "]" => ast::Token::JsonArray(<>),
 };
 
 ReturnKeyValue: ast::Token = {

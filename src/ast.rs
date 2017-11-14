@@ -22,9 +22,11 @@ pub enum Token {
     Array(Box<Token>),
     Bbox(f64, f64, f64, f64),
     Bind(String, Box<Token>),
+    JsonArray(Vec<Token>),
     JsonBool(bool),
     JsonNull,
     JsonNumber(f64),
+    JsonObject(String, Box<Token>),
     JsonString(String),
     Literal(String),
     Not(Box<Token>),
@@ -47,6 +49,7 @@ pub enum Token {
     Path(String),
     ReturnArray(Vec<Token>),
     ReturnBind(String, Box<Option<Token>>),
+    Default(Box<Token>, Box<Token>),
 
     Noise(Box<Token>, Box<Option<Token>>),
 }

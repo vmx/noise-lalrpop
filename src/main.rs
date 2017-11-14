@@ -161,6 +161,30 @@ fn noise() {
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return hello.nested[0]"#)),
                r#"Ok(Noise(All, Some(ReturnBind("hello", Some(Path(".nested[0]"))))))"#);
 
+    // Return default value
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=null"#)),
+               r#"Ok(Noise(All, Some(Default(JsonNull, Path(".hello")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=false"#)),
+               r#"Ok(Noise(All, Some(Default(JsonBool(false), Path(".hello")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=true"#)),
+               r#"Ok(Noise(All, Some(Default(JsonBool(true), Path(".hello")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=400"#)),
+               r#"Ok(Noise(All, Some(Default(JsonNumber(400), Path(".hello")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=-4.6"#)),
+               r#"Ok(Noise(All, Some(Default(JsonNumber(-4.6), Path(".hello")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default="world""#)),
+               r#"Ok(Noise(All, Some(Default(JsonString("world"), Path(".hello")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default={"world": true}"#)),
+               r#"Ok(Noise(All, Some(Default(JsonObject("world", JsonBool(true)), Path(".hello")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default={"world": {"nested": 12}}"#)),
+               r#"Ok(Noise(All, Some(Default(JsonObject("world", JsonObject("nested", JsonNumber(12))), Path(".hello")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=["world"]"#)),
+               r#"Ok(Noise(All, Some(Default(JsonArray([JsonString("world")]), Path(".hello")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=["world", null]"#)),
+               r#"Ok(Noise(All, Some(Default(JsonArray([JsonString("world"), JsonNull]), Path(".hello")))))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=[{"world": null}]"#)),
+               r#"Ok(Noise(All, Some(Default(JsonArray([JsonObject("world", JsonNull)]), Path(".hello")))))"#);
+
     let out = noise::parse_Noise(r#"find {"hello": == "world"} return ."#);
     println!("out: {:?}", out);
 }
