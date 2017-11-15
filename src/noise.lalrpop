@@ -114,8 +114,8 @@ Bbox: ast::Token = {
     }
 };
 
-Boost: f64 = {
-   "^" <Number>
+Boost: u64 = {
+   "^" <UnsignedInteger>
 };
 
 // Returns a token wrapped in a boost if there was one

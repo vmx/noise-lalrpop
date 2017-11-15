@@ -38,7 +38,7 @@ pub enum Token {
     Literal(String),
     Not(Box<Token>),
     Object(String, Box<Token>),
-    Boost(f64, Box<Token>),
+    Boost(u64, Box<Token>),
 
     // If the key is `None` then it's an operator within an array
     Equal(Option<String>, Box<Token>),
