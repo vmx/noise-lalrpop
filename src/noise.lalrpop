@@ -5,7 +5,7 @@ use ast;
 grammar;
 
 pub Noise: ast::Token = {
-    <find:Find> <order:Order?> <ret:("return" <Return>)?> <limit:Limit?> => {
+    <find:Find> <order:Order?> <ret:Return?> <limit:Limit?> => {
         ast::Token::Noise(Box::new(find), order.unwrap_or(Vec::new()), Box::new(ret),
                           Box::new(limit))
     }
@@ -211,8 +211,12 @@ Comma<T>: Vec<T> = {
 };
 
 Return: ast::Token = {
+    "return" <ReturnClause>
+};
+
+ReturnClause: ast::Token = {
     "{" <ReturnKeyValue> "}",
-    "[" <Comma<Return>> "]" => ast::Token::ReturnArray(<>),
+    "[" <Comma<ReturnClause>> "]" => ast::Token::ReturnArray(<>),
     "." => ast::Token::All,
     Path,
     // TODO vmx 2017-11-08: Match bind variable name as implemented in the current parser
@@ -237,7 +241,7 @@ Json: ast::Token = {
 };
 
 ReturnKeyValue: ast::Token = {
-    <key:Literal> ":" <value:Return> => {
+    <key:Literal> ":" <value:ReturnClause> => {
         ast::Token::Object(key, Box::new(value))
     }
 };
