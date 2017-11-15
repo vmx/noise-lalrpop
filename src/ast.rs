@@ -60,5 +60,7 @@ pub enum Token {
 
     Order(OrderType, Box<Option<Token>>),
 
-    Noise(Box<Token>, Vec<Token>, Box<Option<Token>>),
+    Limit(u64),
+
+    Noise(Box<Token>, Vec<Token>, Box<Option<Token>>, Box<Option<Token>>),
 }
