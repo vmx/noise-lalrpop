@@ -219,6 +219,16 @@ fn noise() {
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return . limit 10"#)),
                r#"Ok(Noise(All, [], Some(All), Some(Limit(10))))"#);
 
+    // Group
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [group(.hello)]"#)),
+               r#"Ok(Noise(All, [], Some(ReturnArray([Group(Path(".hello"), None)])), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [group(.hello dsc)]"#)),
+               r#"Ok(Noise(All, [], Some(ReturnArray([Group(Path(".hello"), Dsc)])), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [group(.hello default=2)]"#)),
+               r#"Ok(Noise(All, [], Some(ReturnArray([Group(Default(JsonNumber(2), Path(".hello")), None)])), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [group(.hello default=2 asc)]"#)),
+               r#"Ok(Noise(All, [], Some(ReturnArray([Group(Default(JsonNumber(2), Path(".hello")), Asc)])), None))"#);
+
     let out = noise::parse_Noise(r#"find {"hello": == "world"} return ."#);
     println!("out: {:?}", out);
 }

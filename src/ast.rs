@@ -58,6 +58,8 @@ pub enum Token {
     ReturnBind(String, Box<Option<Token>>),
     Default(Box<Token>, Box<Token>),
 
+    Group(Box<Token>, OrderType),
+
     Order(OrderType, Box<Option<Token>>),
 
     Limit(u64),

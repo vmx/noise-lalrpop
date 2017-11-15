@@ -221,6 +221,7 @@ ReturnClause: ast::Token = {
     Path,
     // TODO vmx 2017-11-08: Match bind variable name as implemented in the current parser
     <bind:r"[^\W\d_]+"> <path:Path?> => ast::Token::ReturnBind(String::from(bind), Box::new(path)),
+    Function,
 };
 
 Path: ast::Token = {
@@ -243,6 +244,12 @@ Json: ast::Token = {
 ReturnKeyValue: ast::Token = {
     <key:Literal> ":" <value:ReturnClause> => {
         ast::Token::Object(key, Box::new(value))
+    }
+};
+
+Function: ast::Token = {
+    "group" "(" <path:Path> <ascdsc:AscDsc?> ")" => {
+        ast::Token::Group(Box::new(path), ascdsc.unwrap_or(ast::OrderType::None))
     }
 };
 
