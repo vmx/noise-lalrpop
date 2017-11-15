@@ -183,13 +183,13 @@ Bool<BoolOp, NextBool>: ast::Token = {
 
 
 Order: Vec<ast::Token> = {
-    "order" <AscDsc> => vec![ast::Token::Order(<>, Box::new(None))],
+    "order" <AscDsc> => vec![ast::Token::Order(Box::new(None), <>)],
     "order" <Comma<OrderCondition>>,
 };
 
 OrderCondition: ast::Token = {
     <path:Path> <ascdsc:AscDsc?> => {
-        ast::Token::Order(ascdsc.unwrap_or(ast::OrderType::None), Box::new(Some(path)))
+        ast::Token::Order(Box::new(Some(path)), ascdsc.unwrap_or(ast::OrderType::None))
     }
 };
 

@@ -52,6 +52,8 @@ pub enum Token {
     And(Box<Token>, Box<Token>),
     Or(Box<Token>, Box<Token>),
 
+    Order(Box<Option<Token>>, OrderType),
+
     All,
     Path(String),
     ReturnArray(Vec<Token>),
@@ -59,8 +61,6 @@ pub enum Token {
     Default(Box<Token>, Box<Token>),
 
     Group(Box<Token>, OrderType),
-
-    Order(OrderType, Box<Option<Token>>),
 
     Limit(u64),
 

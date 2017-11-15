@@ -137,27 +137,27 @@ fn noise() {
 
     // Order
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order asc"#)),
-               r#"Ok(Noise(All, [Order(Asc, None)], None, None))"#);
+               r#"Ok(Noise(All, [Order(None, Asc)], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order dsc"#)),
-               r#"Ok(Noise(All, [Order(Dsc, None)], None, None))"#);
+               r#"Ok(Noise(All, [Order(None, Dsc)], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order .hello"#)),
-               r#"Ok(Noise(All, [Order(None, Some(Path(".hello")))], None, None))"#);
+               r#"Ok(Noise(All, [Order(Some(Path(".hello")), None)], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order .hello default=["abc", true]"#)),
-               r#"Ok(Noise(All, [Order(None, Some(Default(JsonArray([JsonString("abc"), JsonBool(true)]), Path(".hello"))))], None, None))"#);
+               r#"Ok(Noise(All, [Order(Some(Default(JsonArray([JsonString("abc"), JsonBool(true)]), Path(".hello"))), None)], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order .hello asc"#)),
-               r#"Ok(Noise(All, [Order(Asc, Some(Path(".hello")))], None, None))"#);
+               r#"Ok(Noise(All, [Order(Some(Path(".hello")), Asc)], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order .hello dsc"#)),
-               r#"Ok(Noise(All, [Order(Dsc, Some(Path(".hello")))], None, None))"#);
+               r#"Ok(Noise(All, [Order(Some(Path(".hello")), Dsc)], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order .hello default=null dsc"#)),
-               r#"Ok(Noise(All, [Order(Dsc, Some(Default(JsonNull, Path(".hello"))))], None, None))"#);
+               r#"Ok(Noise(All, [Order(Some(Default(JsonNull, Path(".hello"))), Dsc)], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order .hello, .world"#)),
-               r#"Ok(Noise(All, [Order(None, Some(Path(".hello"))), Order(None, Some(Path(".world")))], None, None))"#);
+               r#"Ok(Noise(All, [Order(Some(Path(".hello")), None), Order(Some(Path(".world")), None)], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order .hello asc, .world dsc"#)),
-               r#"Ok(Noise(All, [Order(Asc, Some(Path(".hello"))), Order(Dsc, Some(Path(".world")))], None, None))"#);
+               r#"Ok(Noise(All, [Order(Some(Path(".hello")), Asc), Order(Some(Path(".world")), Dsc)], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order .hello default=1 asc, .world dsc"#)),
-               r#"Ok(Noise(All, [Order(Asc, Some(Default(JsonNumber(1), Path(".hello")))), Order(Dsc, Some(Path(".world")))], None, None))"#);
+               r#"Ok(Noise(All, [Order(Some(Default(JsonNumber(1), Path(".hello"))), Asc), Order(Some(Path(".world")), Dsc)], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order .hello asc, .world default={"some": "default"} dsc"#)),
-               r#"Ok(Noise(All, [Order(Asc, Some(Path(".hello"))), Order(Dsc, Some(Default(JsonObject("some", JsonString("default")), Path(".world"))))], None, None))"#);
+               r#"Ok(Noise(All, [Order(Some(Path(".hello")), Asc), Order(Some(Default(JsonObject("some", JsonString("default")), Path(".world"))), Dsc)], None, None))"#);
 
     // Return
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return ."#)),
@@ -213,9 +213,9 @@ fn noise() {
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} limit 10"#)),
                r#"Ok(Noise(All, [], None, Some(Limit(10))))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order asc limit 10"#)),
-               r#"Ok(Noise(All, [Order(Asc, None)], None, Some(Limit(10))))"#);
+               r#"Ok(Noise(All, [Order(None, Asc)], None, Some(Limit(10))))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order asc return . limit 10"#)),
-               r#"Ok(Noise(All, [Order(Asc, None)], Some(All), Some(Limit(10))))"#);
+               r#"Ok(Noise(All, [Order(None, Asc)], Some(All), Some(Limit(10))))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return . limit 10"#)),
                r#"Ok(Noise(All, [], Some(All), Some(Limit(10))))"#);
 
