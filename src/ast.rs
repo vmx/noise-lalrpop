@@ -55,7 +55,8 @@ pub enum Token {
     Order(Box<Option<Token>>, OrderType),
 
     All,
-    Path(String),
+    Path(Vec<Token>),
+    PathArray(Option<u64>),
     ReturnArray(Vec<Token>),
     ReturnBind(String, Box<Option<Token>>),
     Default(Box<Token>, Box<Token>),

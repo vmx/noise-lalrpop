@@ -77,13 +77,19 @@ Array: ast::Token = {
 };
 
 Bind: String = {
-    // TODO vmx 2017-11-08: Match bind variable name as implemented in the current parser
-    <r"[^\W\d_]+"> "::" => String::from(<>)
+    <Field> "::" => String::from(<>)
 };
 
+// A Literal is any unicode character surrounded by double quotes
+// TODO vmx 2017-11-16: Add support for escpaped quotes
 Literal: String = {
-    // TODO vmx 2017-11-03: Match literal as implemented in the current parser (with escaping)
     <with_quotes:r#""[^"]*""#> => String::from(&with_quotes[1..with_quotes.len() - 1]),
+};
+
+// A Field start with an alphabetic (or `_`, or `$`) character optionally followed by any number of
+// alphanumneric (or `_`, or `$`) characters. It isn't surrounded by quotes.
+Field: String = {
+    r"\p{Alphabetic}[\p{Alphabetic}\p{N}_\$]*" => String::from(<>)
 };
 
 Number: f64 = {
@@ -213,6 +219,7 @@ Comma<T>: Vec<T> = {
    }
 };
 
+
 Return: ast::Token = {
     "return" <ReturnClause>
 };
@@ -222,20 +229,33 @@ ReturnClause: ast::Token = {
     "[" <Comma<ReturnClause>> "]" => ast::Token::ReturnArray(<>),
     "." => ast::Token::All,
     Path,
-    // TODO vmx 2017-11-08: Match bind variable name as implemented in the current parser
-    <bind:r"[^\W\d_]+"> <path:Path?> => ast::Token::ReturnBind(String::from(bind), Box::new(path)),
+    <bind:Field> <path:Path?> => ast::Token::ReturnBind(String::from(bind), Box::new(path)),
     Function,
 };
 
 Path: ast::Token = {
-    // TODO vmx 2017-11-13: Parse path string the same way the current implementation does
-    <path:r"\.([\w\._]+|\[\d*\]?)*"> <default:("default" "=" <Json>)?> => {
-       let pp = ast::Token::Path(String::from(path));
-       match default {
-           Some(dd) => ast::Token::Default(Box::new(dd), Box::new(pp)),
-           None => pp,
-       }
+    <path:(<DotField> <PathPart*>)> <default:("default" "=" <Json>)?> => {
+        // TODO vmx 2017-11-17: Make this part of the code nicer
+        let (field, mut rest) = path;
+        rest.insert(0, field);
+        let pp = ast::Token::Path(rest);
+        match default {
+            Some(dd) => ast::Token::Default(Box::new(dd), Box::new(pp)),
+            None => pp,
+        }
     }
+};
+
+// A part of a path is anything between dots
+PathPart: ast::Token = {
+    DotField,
+    "[" <Literal> "]" => ast::Token::JsonString(<>),
+    "[" <UnsignedInteger> "]" => ast::Token::PathArray(Some(<>)),
+    "[" "]" => ast::Token::PathArray(None),
+};
+
+DotField: ast::Token = {
+    <field:r"\.\p{Alphabetic}[\p{Alphabetic}\p{N}_\$]*"> => ast::Token::JsonString(String::from(&field[1..]))
 };
 
 Json: ast::Token = {
