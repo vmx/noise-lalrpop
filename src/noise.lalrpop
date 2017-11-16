@@ -190,7 +190,10 @@ Order: Vec<ast::Token> = {
 OrderCondition: ast::Token = {
     <path:Path> <ascdsc:AscDsc?> => {
         ast::Token::Order(Box::new(Some(path)), ascdsc.unwrap_or(ast::OrderType::None))
-    }
+    },
+    <score:Score> <ascdsc:AscDsc?> => {
+        ast::Token::Order(Box::new(Some(score)), ascdsc.unwrap_or(ast::OrderType::None))
+    },
 };
 
 AscDsc: ast::OrderType = {
@@ -262,8 +265,12 @@ Function: ast::Token = {
    "max_array" "(" <Path> ")" => ast::Token::MaxArray(Box::new(<>)),
    "min" "(" <Path> ")" => ast::Token::Min(Box::new(<>)),
    "min_array" "(" <Path> ")" => ast::Token::MinArray(Box::new(<>)),
-   "score" "(" ")" => ast::Token::Score,
+   Score,
    "sum" "(" <Path> ")" => ast::Token::Sum(Box::new(<>)),
+};
+
+Score: ast::Token = {
+   "score" "(" ")" => ast::Token::Score
 };
 
 

@@ -158,6 +158,12 @@ fn noise() {
                r#"Ok(Noise(All, [Order(Some(Default(JsonNumber(1), Path(".hello"))), Asc), Order(Some(Path(".world")), Dsc)], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order .hello asc, .world default={"some": "default"} dsc"#)),
                r#"Ok(Noise(All, [Order(Some(Path(".hello")), Asc), Order(Some(Default(JsonObject("some", JsonString("default")), Path(".world"))), Dsc)], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order score()"#)),
+               r#"Ok(Noise(All, [Order(Some(Score), None)], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order score() asc"#)),
+               r#"Ok(Noise(All, [Order(Some(Score), Asc)], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} order score() dsc"#)),
+               r#"Ok(Noise(All, [Order(Some(Score), Dsc)], None, None))"#);
 
     // Return
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return ."#)),
