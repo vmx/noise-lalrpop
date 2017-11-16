@@ -60,7 +60,18 @@ pub enum Token {
     ReturnBind(String, Box<Option<Token>>),
     Default(Box<Token>, Box<Token>),
 
+    GroupArray(Box<Token>),
+    ArrayFlat(Box<Token>),
+    Avg(Box<Token>),
+    Count,
+    Concat(Box<Token>, Option<String>),
     Group(Box<Token>, OrderType),
+    Max(Box<Token>),
+    MaxArray(Box<Token>),
+    Min(Box<Token>),
+    MinArray(Box<Token>),
+    Score,
+    Sum(Box<Token>),
 
     Limit(u64),
 

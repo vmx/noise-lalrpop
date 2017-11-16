@@ -248,9 +248,22 @@ ReturnKeyValue: ast::Token = {
 };
 
 Function: ast::Token = {
-    "group" "(" <path:Path> <ascdsc:AscDsc?> ")" => {
-        ast::Token::Group(Box::new(path), ascdsc.unwrap_or(ast::OrderType::None))
-    }
+   "array" "(" <Path> ")" => ast::Token::GroupArray(Box::new(<>)),
+   "array_flat" "(" <Path> ")" => ast::Token::ArrayFlat(Box::new(<>)),
+   "avg" "(" <Path> ")" => ast::Token::Avg(Box::new(<>)),
+   "count" "(" ")" => ast::Token::Count,
+   "concat" "(" <path:Path> <sep:("sep" "=" <Literal>)?> ")" => {
+       ast::Token::Concat(Box::new(path), sep)
+   },
+   "group" "(" <path:Path> <ascdsc:AscDsc?> ")" => {
+       ast::Token::Group(Box::new(path), ascdsc.unwrap_or(ast::OrderType::None))
+   },
+   "max" "(" <Path> ")" => ast::Token::Max(Box::new(<>)),
+   "max_array" "(" <Path> ")" => ast::Token::MaxArray(Box::new(<>)),
+   "min" "(" <Path> ")" => ast::Token::Min(Box::new(<>)),
+   "min_array" "(" <Path> ")" => ast::Token::MinArray(Box::new(<>)),
+   "score" "(" ")" => ast::Token::Score,
+   "sum" "(" <Path> ")" => ast::Token::Sum(Box::new(<>)),
 };
 
 

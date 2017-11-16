@@ -229,6 +229,32 @@ fn noise() {
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [group(.hello default=2 asc)]"#)),
                r#"Ok(Noise(All, [], Some(ReturnArray([Group(Default(JsonNumber(2), Path(".hello")), Asc)])), None))"#);
 
+    // Aggregations
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return array(.hello)"#)),
+               r#"Ok(Noise(All, [], Some(GroupArray(Path(".hello"))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return array_flat(.hello)"#)),
+               r#"Ok(Noise(All, [], Some(ArrayFlat(Path(".hello"))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return avg(.hello)"#)),
+               r#"Ok(Noise(All, [], Some(Avg(Path(".hello"))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return count()"#)),
+               r#"Ok(Noise(All, [], Some(Count), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return concat(.hello)"#)),
+               r#"Ok(Noise(All, [], Some(Concat(Path(".hello"), None)), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return concat(.hello sep="|")"#)),
+               r#"Ok(Noise(All, [], Some(Concat(Path(".hello"), Some("|"))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return max(.hello)"#)),
+               r#"Ok(Noise(All, [], Some(Max(Path(".hello"))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return max_array(.hello)"#)),
+               r#"Ok(Noise(All, [], Some(MaxArray(Path(".hello"))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return min(.hello)"#)),
+               r#"Ok(Noise(All, [], Some(Min(Path(".hello"))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return min_array(.hello)"#)),
+               r#"Ok(Noise(All, [], Some(MinArray(Path(".hello"))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return score()"#)),
+               r#"Ok(Noise(All, [], Some(Score), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return sum(.hello)"#)),
+               r#"Ok(Noise(All, [], Some(Sum(Path(".hello"))), None))"#);
+
     let out = noise::parse_Noise(r#"find {"hello": == "world"} return ."#);
     println!("out: {:?}", out);
 }
