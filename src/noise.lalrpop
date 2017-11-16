@@ -83,7 +83,7 @@ Bind: String = {
 
 Literal: String = {
     // TODO vmx 2017-11-03: Match literal as implemented in the current parser (with escaping)
-    <with_quotes:r#""[\w\.]+""#> => String::from(&with_quotes[1..with_quotes.len() - 1]),
+    <with_quotes:r#""[^"]*""#> => String::from(&with_quotes[1..with_quotes.len() - 1]),
 };
 
 Number: f64 = {
