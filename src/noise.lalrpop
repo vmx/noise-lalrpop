@@ -245,6 +245,7 @@ Return: ast::Token = {
 ReturnClause: ast::Token = {
     "{" <ReturnKeyValue> "}",
     "[" <Comma<ReturnClause>> "]" => ast::Token::ReturnArray(<>),
+    JsonPrimitive,
     "." => ast::Token::All,
     Path,
     <bind:Field> <path:Path?> => ast::Token::ReturnBind(String::from(bind), Box::new(path)),

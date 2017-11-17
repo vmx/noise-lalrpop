@@ -223,6 +223,23 @@ fn noise() {
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return dsc"#)),
               r#"Ok(Noise(All, [], Some(ReturnBind("dsc", None)), None))"#);
 
+    // Return JSON
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return false"#)),
+              r#"Ok(Noise(All, [], Some(JsonBool(false)), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return true"#)),
+              r#"Ok(Noise(All, [], Some(JsonBool(true)), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return null"#)),
+              r#"Ok(Noise(All, [], Some(JsonNull), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return 123"#)),
+              r#"Ok(Noise(All, [], Some(JsonNumber(123)), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return 123.456"#)),
+              r#"Ok(Noise(All, [], Some(JsonNumber(123.456)), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return "true""#)),
+              r#"Ok(Noise(All, [], Some(JsonString("true")), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {"hello": true}"#)),
+              r#"Ok(Noise(All, [], Some(Object("hello", JsonBool(true))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [null, 12]"#)),
+              r#"Ok(Noise(All, [], Some(ReturnArray([JsonNull, JsonNumber(12)])), None))"#);
 
     // Return default value
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=null"#)),
