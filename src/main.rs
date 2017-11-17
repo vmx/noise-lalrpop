@@ -80,6 +80,8 @@ fn noise() {
     // Bind variables
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": xyz::[== "world"]}"#)),
                r#"Ok(Noise(Object("hello", Bind("xyz", Array(Equal(None, JsonString("world"))))), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": array_flat::[== "world"]}"#)),
+               r#"Ok(Noise(Object("hello", Bind("array_flat", Array(Equal(None, JsonString("world"))))), [], None, None))"#);
 
     // Different types of values
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == null}"#)),
@@ -192,6 +194,8 @@ fn noise() {
               r#"Ok(Noise(All, [], Some(ReturnBind("hello", None)), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return hello.nested[0]"#)),
               r#"Ok(Noise(All, [], Some(ReturnBind("hello", Some(Path([JsonString("nested"), PathArray(Some(0))])))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return array"#)),
+              r#"Ok(Noise(All, [], Some(ReturnBind("array", None)), None))"#);
 
     // Return default value
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=null"#)),

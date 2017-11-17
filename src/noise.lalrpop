@@ -89,7 +89,22 @@ Literal: String = {
 // A Field start with an alphabetic (or `_`, or `$`) character optionally followed by any number of
 // alphanumneric (or `_`, or `$`) characters. It isn't surrounded by quotes.
 Field: String = {
-    r"\p{Alphabetic}[\p{Alphabetic}\p{N}_\$]*" => String::from(<>)
+    r"\p{Alphabetic}[\p{Alphabetic}\p{N}_\$]*" => String::from(<>),
+    LiteralFalse => String::from(<>),
+    LiteralTrue => String::from(<>),
+    LiteralNull => String::from(<>),
+    LiteralArray => String::from(<>),
+    LiteralArrayFlat => String::from(<>),
+    LiteralAvg => String::from(<>),
+    LiteralCount => String::from(<>),
+    LiteralConcat => String::from(<>),
+    LiteralGroup => String::from(<>),
+    LiteralMax => String::from(<>),
+    LiteralMaxArray => String::from(<>),
+    LiteralMin => String::from(<>),
+    LiteralMinArray => String::from(<>),
+    LiteralScore => String::from(<>),
+    LiteralSum => String::from(<>),
 };
 
 Number: f64 = {
@@ -255,7 +270,7 @@ PathPart: ast::Token = {
 };
 
 DotField: ast::Token = {
-    <field:r"\.\p{Alphabetic}[\p{Alphabetic}\p{N}_\$]*"> => ast::Token::JsonString(String::from(&field[1..]))
+    "." <field:Field> => ast::Token::JsonString(<>)
 };
 
 Json: ast::Token = {
@@ -271,32 +286,57 @@ ReturnKeyValue: ast::Token = {
 };
 
 Function: ast::Token = {
-   "array" "(" <Path> ")" => ast::Token::GroupArray(Box::new(<>)),
-   "array_flat" "(" <Path> ")" => ast::Token::ArrayFlat(Box::new(<>)),
-   "avg" "(" <Path> ")" => ast::Token::Avg(Box::new(<>)),
-   "count" "(" ")" => ast::Token::Count,
-   "concat" "(" <path:Path> <sep:("sep" "=" <Literal>)?> ")" => {
+   LiteralArray "(" <Path> ")" => ast::Token::GroupArray(Box::new(<>)),
+   LiteralArrayFlat "(" <Path> ")" => ast::Token::ArrayFlat(Box::new(<>)),
+   LiteralAvg "(" <Path> ")" => ast::Token::Avg(Box::new(<>)),
+   LiteralCount "(" ")" => ast::Token::Count,
+   LiteralConcat "(" <path:Path> <sep:("sep" "=" <Literal>)?> ")" => {
        ast::Token::Concat(Box::new(path), sep)
    },
-   "group" "(" <path:Path> <ascdsc:AscDsc?> ")" => {
+   LiteralGroup "(" <path:Path> <ascdsc:AscDsc?> ")" => {
        ast::Token::Group(Box::new(path), ascdsc.unwrap_or(ast::OrderType::None))
    },
-   "max" "(" <Path> ")" => ast::Token::Max(Box::new(<>)),
-   "max_array" "(" <Path> ")" => ast::Token::MaxArray(Box::new(<>)),
-   "min" "(" <Path> ")" => ast::Token::Min(Box::new(<>)),
-   "min_array" "(" <Path> ")" => ast::Token::MinArray(Box::new(<>)),
+   LiteralMax "(" <Path> ")" => ast::Token::Max(Box::new(<>)),
+   LiteralMaxArray "(" <Path> ")" => ast::Token::MaxArray(Box::new(<>)),
+   LiteralMin "(" <Path> ")" => ast::Token::Min(Box::new(<>)),
+   LiteralMinArray "(" <Path> ")" => ast::Token::MinArray(Box::new(<>)),
    Score,
-   "sum" "(" <Path> ")" => ast::Token::Sum(Box::new(<>)),
+   LiteralSum "(" <Path> ")" => ast::Token::Sum(Box::new(<>)),
 };
 
 Score: ast::Token = {
-   "score" "(" ")" => ast::Token::Score
+   LiteralScore "(" ")" => ast::Token::Score
 };
 
 
 Limit: ast::Token = {
     "limit" <UnsignedInteger> => ast::Token::Limit(<>)
 };
+
+
+// Make all those keywords to productions so they can be used to prevent clashed between keywords
+// and free-form names
+LiteralFind = "find";
+LiteralOrder = "order";
+LiteralReturn = "return";
+LiteralLimit = "limit";
+
+LiteralFalse = "false";
+LiteralTrue = "true";
+LiteralNull = "null";
+
+LiteralArray = "array";
+LiteralArrayFlat = "array_flat";
+LiteralAvg = "avg";
+LiteralCount = "count";
+LiteralConcat = "concat";
+LiteralGroup = "group";
+LiteralMax = "max";
+LiteralMaxArray = "max_array";
+LiteralMin = "min";
+LiteralMinArray = "min_array";
+LiteralScore = "score";
+LiteralSum = "sum";
 
 
 match {
