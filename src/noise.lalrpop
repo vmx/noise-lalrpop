@@ -254,7 +254,6 @@ ReturnClause: ast::Token = {
 
 Path: ast::Token = {
     <path:(<DotField> <PathPart*>)> <default:("default" "=" <Json>)?> => {
-        // TODO vmx 2017-11-17: Make this part of the code nicer
         let (field, mut rest) = path;
         rest.insert(0, field);
         let pp = ast::Token::Path(rest);
