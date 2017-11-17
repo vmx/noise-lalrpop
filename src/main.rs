@@ -82,6 +82,18 @@ fn noise() {
                r#"Ok(Noise(Object("hello", Bind("xyz", Array(Equal(None, JsonString("world"))))), [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": array_flat::[== "world"]}"#)),
                r#"Ok(Noise(Object("hello", Bind("array_flat", Array(Equal(None, JsonString("world"))))), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": find::[== "world"]}"#)),
+               r#"Ok(Noise(Object("hello", Bind("find", Array(Equal(None, JsonString("world"))))), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": order::[== "world"]}"#)),
+               r#"Ok(Noise(Object("hello", Bind("order", Array(Equal(None, JsonString("world"))))), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": return::[== "world"]}"#)),
+              r#"Ok(Noise(Object("hello", Bind("return", Array(Equal(None, JsonString("world"))))), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": limit::[== "world"]}"#)),
+              r#"Ok(Noise(Object("hello", Bind("limit", Array(Equal(None, JsonString("world"))))), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": asc::[== "world"]}"#)),
+              r#"Ok(Noise(Object("hello", Bind("asc", Array(Equal(None, JsonString("world"))))), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": dsc::[== "world"]}"#)),
+              r#"Ok(Noise(Object("hello", Bind("dsc", Array(Equal(None, JsonString("world"))))), [], None, None))"#);
 
     // Different types of values
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == null}"#)),
@@ -190,12 +202,27 @@ fn noise() {
              r#"Ok(Noise(All, [], Some(Object("hello", ReturnArray([Object("array", Path([JsonString("nested")]))]))), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {"nested": [.array]}"#)),
              r#"Ok(Noise(All, [], Some(Object("nested", ReturnArray([Path([JsonString("array")])]))), None))"#);
+
+    // Return bind variables
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return hello"#)),
               r#"Ok(Noise(All, [], Some(ReturnBind("hello", None)), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return hello.nested[0]"#)),
               r#"Ok(Noise(All, [], Some(ReturnBind("hello", Some(Path([JsonString("nested"), PathArray(Some(0))])))), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return array"#)),
               r#"Ok(Noise(All, [], Some(ReturnBind("array", None)), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return find"#)),
+              r#"Ok(Noise(All, [], Some(ReturnBind("find", None)), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return order"#)),
+              r#"Ok(Noise(All, [], Some(ReturnBind("order", None)), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return return"#)),
+              r#"Ok(Noise(All, [], Some(ReturnBind("return", None)), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return limit"#)),
+              r#"Ok(Noise(All, [], Some(ReturnBind("limit", None)), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return asc"#)),
+              r#"Ok(Noise(All, [], Some(ReturnBind("asc", None)), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return dsc"#)),
+              r#"Ok(Noise(All, [], Some(ReturnBind("dsc", None)), None))"#);
+
 
     // Return default value
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=null"#)),

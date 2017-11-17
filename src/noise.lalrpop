@@ -12,8 +12,8 @@ pub Noise: ast::Token = {
 };
 
 Find: ast::Token = {
-    "find" "{}" => ast::Token::All,
-    "find" <OrBoolObject>,
+    LiteralFind "{}" => ast::Token::All,
+    LiteralFind <OrBoolObject>,
 };
 
 KeyValue: ast::Token = {
@@ -90,9 +90,12 @@ Literal: String = {
 // alphanumneric (or `_`, or `$`) characters. It isn't surrounded by quotes.
 Field: String = {
     r"\p{Alphabetic}[\p{Alphabetic}\p{N}_\$]*" => String::from(<>),
-    LiteralFalse => String::from(<>),
-    LiteralTrue => String::from(<>),
-    LiteralNull => String::from(<>),
+    LiteralFind => String::from(<>),
+    LiteralOrder => String::from(<>),
+    LiteralReturn => String::from(<>),
+    LiteralLimit => String::from(<>),
+    LiteralAsc => String::from(<>),
+    LiteralDsc => String::from(<>),
     LiteralArray => String::from(<>),
     LiteralArrayFlat => String::from(<>),
     LiteralAvg => String::from(<>),
@@ -204,8 +207,8 @@ Bool<BoolOp, NextBool>: ast::Token = {
 
 
 Order: Vec<ast::Token> = {
-    "order" <AscDsc> => vec![ast::Token::Order(Box::new(None), <>)],
-    "order" <Comma<OrderCondition>>,
+    LiteralOrder <AscDsc> => vec![ast::Token::Order(Box::new(None), <>)],
+    LiteralOrder <Comma<OrderCondition>>,
 };
 
 OrderCondition: ast::Token = {
@@ -218,8 +221,8 @@ OrderCondition: ast::Token = {
 };
 
 AscDsc: ast::OrderType = {
-    "asc" => ast::OrderType::Asc,
-    "dsc" => ast::OrderType::Dsc,
+    LiteralAsc => ast::OrderType::Asc,
+    LiteralDsc => ast::OrderType::Dsc,
 };
 
 
@@ -236,7 +239,7 @@ Comma<T>: Vec<T> = {
 
 
 Return: ast::Token = {
-    "return" <ReturnClause>
+    LiteralReturn <ReturnClause>
 };
 
 ReturnClause: ast::Token = {
@@ -270,7 +273,9 @@ PathPart: ast::Token = {
 };
 
 DotField: ast::Token = {
-    "." <field:Field> => ast::Token::JsonString(<>)
+    <with_dot:r"\.\p{Alphabetic}[\p{Alphabetic}\p{N}_\$]*"> => {
+        ast::Token::JsonString(String::from(&with_dot[1..]))
+    }
 };
 
 Json: ast::Token = {
@@ -310,7 +315,7 @@ Score: ast::Token = {
 
 
 Limit: ast::Token = {
-    "limit" <UnsignedInteger> => ast::Token::Limit(<>)
+    LiteralLimit <UnsignedInteger> => ast::Token::Limit(<>)
 };
 
 
@@ -324,6 +329,9 @@ LiteralLimit = "limit";
 LiteralFalse = "false";
 LiteralTrue = "true";
 LiteralNull = "null";
+
+LiteralAsc = "asc";
+LiteralDsc = "dsc";
 
 LiteralArray = "array";
 LiteralArrayFlat = "array_flat";
