@@ -10,6 +10,8 @@ fn noise() {
                r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {hello: == "world"}"#)),
                r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hell \"escaped\"": == "world"}"#)),
+               r#"Ok(Noise(Equal(Some("hell \\\"escaped\\\""), JsonString("world")), [], None, None))"#);
 
     // Nested
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": {"nested": == "world"}}"#)),

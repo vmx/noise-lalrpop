@@ -81,9 +81,8 @@ Bind: String = {
 };
 
 // A Literal is any unicode character surrounded by double quotes
-// TODO vmx 2017-11-16: Add support for escpaped quotes
 Literal: String = {
-    <with_quotes:r#""[^"]*""#> => String::from(&with_quotes[1..with_quotes.len() - 1]),
+    <with_quotes:r#""(?:[^"\\]|\\.)*""#> => String::from(&with_quotes[1..with_quotes.len() - 1]),
 };
 
 // A Field start with an alphabetic (or `_`, or `$`) character optionally followed by any number of
