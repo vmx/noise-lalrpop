@@ -125,9 +125,9 @@ UnsignedInteger: u64 = {
 };
 
 JsonPrimitive: ast::Token = {
-    "null" => ast::Token::JsonNull,
-    "false" => ast::Token::JsonBool(false),
-    "true" => ast::Token::JsonBool(true),
+    LiteralNull => ast::Token::JsonNull,
+    LiteralFalse => ast::Token::JsonBool(false),
+    LiteralTrue => ast::Token::JsonBool(true),
     Number => ast::Token::JsonNumber(<>),
     Literal => ast::Token::JsonString(<>),
 };
