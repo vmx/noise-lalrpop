@@ -18,11 +18,11 @@ Find: ast::Token = {
 
 KeyValue: ast::Token = {
     // This one recurses down nested objects
-    <key:Literal> ":" <value:NotHelper<BoostHelper<Object>>> => {
+    <key:LiteralOrField> ":" <value:NotHelper<BoostHelper<Object>>> => {
         ast::Token::Object(key, Box::new(value))
     },
     // This matches an object where the value is an array
-    <key:Literal> ":" <bind:Bind?> <value:BoostHelper<Array>> => {
+    <key:LiteralOrField> ":" <bind:Bind?> <value:BoostHelper<Array>> => {
         match bind {
             Some(bb) => ast::Token::Object(key, Box::new(ast::Token::Bind(bb, Box::new(value)))),
             None => ast::Token::Object(key, Box::new(value))
@@ -36,7 +36,7 @@ KeyValue: ast::Token = {
 
 KeyOperatorValue: ast::Token = {
     // Within an array the operator might not have a key
-    <key:(<Literal> ":")?> <op:Operator> <value:JsonPrimitive> => {
+    <key:(<LiteralOrField> ":")?> <op:Operator> <value:JsonPrimitive> => {
         match op {
             ast::OperatorType::Equal => ast::Token::Equal(key, Box::new(value)),
             ast::OperatorType::Greater => ast::Token::Greater(key, Box::new(value)),
@@ -50,7 +50,7 @@ KeyOperatorValue: ast::Token = {
             ast::OperatorType::WordMatch => ast::Token::WordMatch(key, Box::new(value)),
         }
     },
-    <key:(<Literal> ":")?> "&&" <bbox:Bbox> => {
+    <key:(<LiteralOrField> ":")?> "&&" <bbox:Bbox> => {
         ast::Token::Intersect(key, Box::new(bbox))
     },
 };
@@ -108,6 +108,11 @@ Field: String = {
     LiteralMinArray => String::from(<>),
     LiteralScore => String::from(<>),
     LiteralSum => String::from(<>),
+};
+
+LiteralOrField: String = {
+    Literal,
+    Field,
 };
 
 Number: f64 = {

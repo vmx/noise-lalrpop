@@ -8,9 +8,13 @@ fn noise() {
                r#"Ok(Noise(All, [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"}"#)),
                r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {hello: == "world"}"#)),
+               r#"Ok(Noise(Equal(Some("hello"), JsonString("world")), [], None, None))"#);
 
     // Nested
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": {"nested": == "world"}}"#)),
+               r#"Ok(Noise(Object("hello", Equal(Some("nested"), JsonString("world"))), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {hello: {nested: == "world"}}"#)),
                r#"Ok(Noise(Object("hello", Equal(Some("nested"), JsonString("world"))), [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": {"deeply": {"nested": == "world"}}}"#)),
                r#"Ok(Noise(Object("hello", Object("deeply", Equal(Some("nested"), JsonString("world")))), [], None, None))"#);
