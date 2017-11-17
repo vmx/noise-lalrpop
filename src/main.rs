@@ -202,6 +202,8 @@ fn noise() {
              r#"Ok(Noise(All, [], Some(Object("hello", ReturnArray([Object("array", Path([JsonString("nested")]))]))), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {"nested": [.array]}"#)),
              r#"Ok(Noise(All, [], Some(Object("nested", ReturnArray([Path([JsonString("array")])]))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return ._id"#)),
+               r#"Ok(Noise(All, [], Some(Path([JsonString("_id")])), None))"#);
 
     // Return bind variables
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return hello"#)),

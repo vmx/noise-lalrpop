@@ -89,7 +89,7 @@ Literal: String = {
 // A Field start with an alphabetic (or `_`, or `$`) character optionally followed by any number of
 // alphanumneric (or `_`, or `$`) characters. It isn't surrounded by quotes.
 Field: String = {
-    r"\p{Alphabetic}[\p{Alphabetic}\p{N}_\$]*" => String::from(<>),
+    r"[\p{Alphabetic}_\$][\p{Alphabetic}\p{N}_\$]*" => String::from(<>),
     LiteralFind => String::from(<>),
     LiteralOrder => String::from(<>),
     LiteralReturn => String::from(<>),
@@ -273,7 +273,7 @@ PathPart: ast::Token = {
 };
 
 DotField: ast::Token = {
-    <with_dot:r"\.\p{Alphabetic}[\p{Alphabetic}\p{N}_\$]*"> => {
+    <with_dot:r"\.[\p{Alphabetic}_\$][\p{Alphabetic}\p{N}_\$]*"> => {
         ast::Token::JsonString(String::from(&with_dot[1..]))
     }
 };
