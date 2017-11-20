@@ -290,7 +290,7 @@ Json: ast::Token = {
 };
 
 ReturnKeyValue: ast::Token = {
-    <key:Literal> ":" <value:ReturnClause> => {
+    <key:LiteralOrField> ":" <value:ReturnClause> => {
         ast::Token::Object(key, Box::new(value))
     }
 };

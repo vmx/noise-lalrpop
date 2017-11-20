@@ -246,6 +246,8 @@ fn noise() {
               r#"Ok(Noise(All, [], Some(JsonString("true")), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {"hello": true}"#)),
               r#"Ok(Noise(All, [], Some(Object("hello", JsonBool(true))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {hello: true}"#)),
+              r#"Ok(Noise(All, [], Some(Object("hello", JsonBool(true))), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [null, 12]"#)),
               r#"Ok(Noise(All, [], Some(ReturnArray([JsonNull, JsonNumber(12)])), None))"#);
 
