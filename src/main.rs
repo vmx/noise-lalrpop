@@ -195,19 +195,21 @@ fn noise() {
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello[0].nested"#)),
               r#"Ok(Noise(All, [], Some(Path([JsonString("hello"), PathArray(Some(0)), JsonString("nested")])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {"nested": .hello}"#)),
-              r#"Ok(Noise(All, [], Some(Object("nested", Path([JsonString("hello")]))), None))"#);
+              r#"Ok(Noise(All, [], Some(ReturnObject([Object("nested", Path([JsonString("hello")]))])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {"nested": {"deeper": .hello}}"#)),
-              r#"Ok(Noise(All, [], Some(Object("nested", Object("deeper", Path([JsonString("hello")])))), None))"#);
+              r#"Ok(Noise(All, [], Some(ReturnObject([Object("nested", ReturnObject([Object("deeper", Path([JsonString("hello")]))]))])), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {"nested": {"deeper": .hello, "one": .world}}"#)),
+              r#"Ok(Noise(All, [], Some(ReturnObject([Object("nested", ReturnObject([Object("deeper", Path([JsonString("hello")])), Object("one", Path([JsonString("world")]))]))])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [.hello]"#)),
               r#"Ok(Noise(All, [], Some(ReturnArray([Path([JsonString("hello")])])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [.hello, .another[5], .third.one]"#)),
               r#"Ok(Noise(All, [], Some(ReturnArray([Path([JsonString("hello")]), Path([JsonString("another"), PathArray(Some(5))]), Path([JsonString("third"), JsonString("one")])])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [.hello, {"nested": .one}]"#)),
-              r#"Ok(Noise(All, [], Some(ReturnArray([Path([JsonString("hello")]), Object("nested", Path([JsonString("one")]))])), None))"#);
+              r#"Ok(Noise(All, [], Some(ReturnArray([Path([JsonString("hello")]), ReturnObject([Object("nested", Path([JsonString("one")]))])])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {"hello": [{"array": .nested}]}"#)),
-             r#"Ok(Noise(All, [], Some(Object("hello", ReturnArray([Object("array", Path([JsonString("nested")]))]))), None))"#);
+             r#"Ok(Noise(All, [], Some(ReturnObject([Object("hello", ReturnArray([ReturnObject([Object("array", Path([JsonString("nested")]))])]))])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {"nested": [.array]}"#)),
-             r#"Ok(Noise(All, [], Some(Object("nested", ReturnArray([Path([JsonString("array")])]))), None))"#);
+             r#"Ok(Noise(All, [], Some(ReturnObject([Object("nested", ReturnArray([Path([JsonString("array")])]))])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return ._id"#)),
                r#"Ok(Noise(All, [], Some(Path([JsonString("_id")])), None))"#);
 
@@ -245,11 +247,13 @@ fn noise() {
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return "true""#)),
               r#"Ok(Noise(All, [], Some(JsonString("true")), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {"hello": true}"#)),
-              r#"Ok(Noise(All, [], Some(Object("hello", JsonBool(true))), None))"#);
+              r#"Ok(Noise(All, [], Some(ReturnObject([Object("hello", JsonBool(true))])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {hello: true}"#)),
-              r#"Ok(Noise(All, [], Some(Object("hello", JsonBool(true))), None))"#);
+              r#"Ok(Noise(All, [], Some(ReturnObject([Object("hello", JsonBool(true))])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [null, 12]"#)),
               r#"Ok(Noise(All, [], Some(ReturnArray([JsonNull, JsonNumber(12)])), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {hello: true, another: "one"}"#)),
+              r#"Ok(Noise(All, [], Some(ReturnObject([Object("hello", JsonBool(true)), Object("another", JsonString("one"))])), None))"#);
 
     // Return default value
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=null"#)),

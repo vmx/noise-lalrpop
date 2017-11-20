@@ -59,6 +59,7 @@ pub enum Token {
     PathArray(Option<u64>),
     ReturnArray(Vec<Token>),
     ReturnBind(String, Box<Option<Token>>),
+    ReturnObject(Vec<Token>),
     Default(Box<Token>, Box<Token>),
 
     GroupArray(Box<Token>),

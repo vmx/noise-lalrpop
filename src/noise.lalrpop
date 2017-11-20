@@ -248,7 +248,7 @@ Return: ast::Token = {
 };
 
 ReturnClause: ast::Token = {
-    "{" <ReturnKeyValue> "}",
+    "{" <Comma<ReturnKeyValue>> "}" => ast::Token::ReturnObject(<>),
     "[" <Comma<ReturnClause>> "]" => ast::Token::ReturnArray(<>),
     JsonPrimitive,
     "." => ast::Token::All,
