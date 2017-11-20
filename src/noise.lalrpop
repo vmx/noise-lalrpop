@@ -82,6 +82,7 @@ Bind: String = {
 
 // A Literal is any unicode character surrounded by double quotes
 Literal: String = {
+    // From https://stackoverflow.com/questions/249791/regex-for-quoted-string-with-escaping-quotes/249937#249937
     <with_quotes:r#""(?:[^"\\]|\\.)*""#> => String::from(&with_quotes[1..with_quotes.len() - 1]),
 };
 
@@ -94,7 +95,7 @@ Field: String = {
     LiteralReturn => String::from(<>),
     LiteralLimit => String::from(<>),
     LiteralAsc => String::from(<>),
-    LiteralDsc => String::from(<>),
+    LiteralDesc => String::from(<>),
     LiteralArray => String::from(<>),
     LiteralArrayFlat => String::from(<>),
     LiteralAvg => String::from(<>),
@@ -211,22 +212,22 @@ Bool<BoolOp, NextBool>: ast::Token = {
 
 
 Order: Vec<ast::Token> = {
-    LiteralOrder <AscDsc> => vec![ast::Token::Order(Box::new(None), <>)],
+    LiteralOrder <AscDesc> => vec![ast::Token::Order(Box::new(None), <>)],
     LiteralOrder <Comma<OrderCondition>>,
 };
 
 OrderCondition: ast::Token = {
-    <path:Path> <ascdsc:AscDsc?> => {
-        ast::Token::Order(Box::new(Some(path)), ascdsc.unwrap_or(ast::OrderType::None))
+    <path:Path> <ascdesc:AscDesc?> => {
+        ast::Token::Order(Box::new(Some(path)), ascdesc.unwrap_or(ast::OrderType::None))
     },
-    <score:Score> <ascdsc:AscDsc?> => {
-        ast::Token::Order(Box::new(Some(score)), ascdsc.unwrap_or(ast::OrderType::None))
+    <score:Score> <ascdesc:AscDesc?> => {
+        ast::Token::Order(Box::new(Some(score)), ascdesc.unwrap_or(ast::OrderType::None))
     },
 };
 
-AscDsc: ast::OrderType = {
+AscDesc: ast::OrderType = {
     LiteralAsc => ast::OrderType::Asc,
-    LiteralDsc => ast::OrderType::Dsc,
+    LiteralDesc => ast::OrderType::Desc,
 };
 
 
@@ -302,8 +303,8 @@ Function: ast::Token = {
    LiteralConcat "(" <path:Path> <sep:("sep" "=" <Literal>)?> ")" => {
        ast::Token::Concat(Box::new(path), sep)
    },
-   LiteralGroup "(" <path:Path> <ascdsc:AscDsc?> ")" => {
-       ast::Token::Group(Box::new(path), ascdsc.unwrap_or(ast::OrderType::None))
+   LiteralGroup "(" <path:Path> <ascdesc:AscDesc?> ")" => {
+       ast::Token::Group(Box::new(path), ascdesc.unwrap_or(ast::OrderType::None))
    },
    LiteralMax "(" <Path> ")" => ast::Token::Max(Box::new(<>)),
    LiteralMaxArray "(" <Path> ")" => ast::Token::MaxArray(Box::new(<>)),
@@ -335,7 +336,7 @@ LiteralTrue = "true";
 LiteralNull = "null";
 
 LiteralAsc = "asc";
-LiteralDsc = "dsc";
+LiteralDesc = "desc";
 
 LiteralArray = "array";
 LiteralArrayFlat = "array_flat";

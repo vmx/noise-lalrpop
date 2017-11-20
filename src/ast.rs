@@ -21,7 +21,7 @@ pub enum BoolType {
 pub enum OrderType {
     None,
     Asc,
-    Dsc,
+    Desc,
 }
 
 #[derive(Debug, PartialEq)]
