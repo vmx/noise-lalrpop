@@ -295,6 +295,13 @@ Json: ast::Token = {
    JsonPrimitive,
    "{" <literal:LiteralOrField> ":" <json:Json> "}" => ast::Token::JsonObject(literal, Box::new(json)),
    "[" <Comma<Json>> "]" => ast::Token::JsonArray(<>),
+   EmptyObject,
+};
+
+// Probably due to the tokeniser both cases are needed
+EmptyObject: ast::Token = {
+   "{" "}" => ast::Token::JsonObjectEmpty,
+   "{}" => ast::Token::JsonObjectEmpty,
 };
 
 ReturnKeyValue: ast::Token = {

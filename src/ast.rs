@@ -34,6 +34,7 @@ pub enum Token {
     JsonNull,
     JsonNumber(f64),
     JsonObject(String, Box<Token>),
+    JsonObjectEmpty,
     JsonString(String),
     Literal(String),
     Not(Box<Token>),
