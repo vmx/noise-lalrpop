@@ -72,8 +72,10 @@ Object: ast::Token = {
 Array: ast::Token = {
     // Arrays can contain objects...
     "[" <NotHelper<BoostHelper<Object>>> "]" => ast::Token::Array(Box::new(<>)),
-    // ...or operators
+    // ...or operators...
     "[" <OrBool> "]" => ast::Token::Array(Box::new(<>)),
+    // ...or arrays
+    "[" <Array> "]" => ast::Token::Array(Box::new(<>)),
 };
 
 Bind: String = {

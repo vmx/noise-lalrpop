@@ -56,6 +56,8 @@ fn noise() {
                r#"Ok(Noise(Object("hello", Array(And(Equal(Some("array"), JsonString("world")), Equal(Some("another"), JsonString("one"))))), [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": [== "world"]}"#)),
                r#"Ok(Noise(Object("hello", Array(Equal(None, JsonString("world")))), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": [[== "world"]]}"#)),
+               r#"Ok(Noise(Object("hello", Array(Array(Equal(None, JsonString("world"))))), [], None, None))"#);
 
     // Boost
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world"^2}"#)),
