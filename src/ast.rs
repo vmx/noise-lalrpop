@@ -7,8 +7,8 @@ pub enum OperatorType {
     Less,
     LessEqual,
     NotEqual,
-    NotWordMatch,
-    WordMatch,
+    NotWordMatch(Option<u64>),
+    WordMatch(Option<u64>),
 }
 
 #[derive(Debug)]
@@ -47,7 +47,7 @@ pub enum Token {
     Intersect(Option<String>, Box<Token>),
     Less(Option<String>, Box<Token>),
     LessEqual(Option<String>, Box<Token>),
-    WordMatch(Option<String>, Box<Token>),
+    WordMatch(Option<String>, Option<u64>, Box<Token>),
 
     And(Box<Token>, Box<Token>),
     Or(Box<Token>, Box<Token>),

@@ -46,8 +46,12 @@ KeyOperatorValue: ast::Token = {
             ast::OperatorType::Less => ast::Token::Less(key, Box::new(value)),
             ast::OperatorType::LessEqual => ast::Token::LessEqual(key, Box::new(value)),
             ast::OperatorType::NotEqual => ast::Token::Not(Box::new(ast::Token::Equal(key, Box::new(value)))),
-            ast::OperatorType::NotWordMatch => ast::Token::Not(Box::new(ast::Token::WordMatch(key, Box::new(value)))),
-            ast::OperatorType::WordMatch => ast::Token::WordMatch(key, Box::new(value)),
+            ast::OperatorType::NotWordMatch(proximity) => {
+                ast::Token::Not(Box::new(ast::Token::WordMatch(key, proximity, Box::new(value))))
+            },
+            ast::OperatorType::WordMatch(proximity) => {
+                ast::Token::WordMatch(key, proximity, Box::new(value))
+            },
         }
     },
     <key:(<LiteralOrField> ":")?> "&&" <bbox:Bbox> => {
@@ -180,8 +184,10 @@ Operator: ast::OperatorType = {
     "<" => ast::OperatorType::Less,
     "<=" => ast::OperatorType::LessEqual,
     "!=" => ast::OperatorType::NotEqual,
-    "!~=" => ast::OperatorType::NotWordMatch,
-    "~=" => ast::OperatorType::WordMatch,
+    "!~=" => ast::OperatorType::NotWordMatch(None),
+    "!~" <UnsignedInteger> "=" => ast::OperatorType::NotWordMatch(Some(<>)),
+    "~=" => ast::OperatorType::WordMatch(None),
+    "~" <UnsignedInteger> "=" => ast::OperatorType::WordMatch(Some(<>)),
 };
 
 

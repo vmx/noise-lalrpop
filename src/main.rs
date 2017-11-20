@@ -127,7 +127,9 @@ fn noise() {
 
     // Operators
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": ~= "world"}"#)),
-               r#"Ok(Noise(WordMatch(Some("hello"), JsonString("world")), [], None, None))"#);
+               r#"Ok(Noise(WordMatch(Some("hello"), None, JsonString("world")), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": ~34= "world"}"#)),
+               r#"Ok(Noise(WordMatch(Some("hello"), Some(34), JsonString("world")), [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": > 10}"#)),
                r#"Ok(Noise(Greater(Some("hello"), JsonNumber(10)), [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": >= 10}"#)),
@@ -145,7 +147,9 @@ fn noise() {
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": != "world"}"#)),
                r#"Ok(Noise(Not(Equal(Some("hello"), JsonString("world"))), [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": !~= "world"}"#)),
-               r#"Ok(Noise(Not(WordMatch(Some("hello"), JsonString("world"))), [], None, None))"#);
+               r#"Ok(Noise(Not(WordMatch(Some("hello"), None, JsonString("world"))), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": !~123= "world"}"#)),
+               r#"Ok(Noise(Not(WordMatch(Some("hello"), Some(123), JsonString("world"))), [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find !({"hello": == "world"})"#)),
                r#"Ok(Noise(Not(Equal(Some("hello"), JsonString("world"))), [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": !{"nested": == "world"}}"#)),
