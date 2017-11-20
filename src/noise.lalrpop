@@ -31,7 +31,7 @@ KeyValue: ast::Token = {
     // This matches once we hit an operator within an object or array
     BoostHelper<KeyOperatorValue>,
     // Allow parenthesis
-    BoostHelper<Parenthesis>,
+    NotHelper<BoostHelper<Parenthesis>>,
 };
 
 KeyOperatorValue: ast::Token = {
