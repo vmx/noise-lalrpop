@@ -154,6 +154,8 @@ fn noise() {
                r#"Ok(Noise(Object("hello", Not(Equal(Some("nested"), JsonString("world")))), [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": [!{"array": == "world"}]}"#)),
                r#"Ok(Noise(Object("hello", Array(Not(Equal(Some("array"), JsonString("world"))))), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": ![== "world"]}"#)),
+               r#"Ok(Noise(Object("hello", Not(Array(Equal(None, JsonString("world"))))), [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == "world", !("another": == "one")}"#)),
                r#"Ok(Noise(And(Equal(Some("hello"), JsonString("world")), Not(Equal(Some("another"), JsonString("one")))), [], None, None))"#);
 

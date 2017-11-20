@@ -22,7 +22,7 @@ KeyValue: ast::Token = {
         ast::Token::Object(key, Box::new(value))
     },
     // This matches an object where the value is an array
-    <key:LiteralOrField> ":" <bind:Bind?> <value:BoostHelper<Array>> => {
+    <key:LiteralOrField> ":" <bind:Bind?> <value:NotHelper<BoostHelper<Array>>> => {
         match bind {
             Some(bb) => ast::Token::Object(key, Box::new(ast::Token::Bind(bb, Box::new(value)))),
             None => ast::Token::Object(key, Box::new(value))
