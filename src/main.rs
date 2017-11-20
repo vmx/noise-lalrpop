@@ -282,6 +282,8 @@ fn noise() {
                r#"Ok(Noise(All, [], Some(Default(JsonObject("world", JsonBool(true)), Path([JsonString("hello")]))), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default={"world": {"nested": 12}}"#)),
                r#"Ok(Noise(All, [], Some(Default(JsonObject("world", JsonObject("nested", JsonNumber(12))), Path([JsonString("hello")]))), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default={world: {nested: 12}}"#)),
+               r#"Ok(Noise(All, [], Some(Default(JsonObject("world", JsonObject("nested", JsonNumber(12))), Path([JsonString("hello")]))), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=["world"]"#)),
                r#"Ok(Noise(All, [], Some(Default(JsonArray([JsonString("world")]), Path([JsonString("hello")]))), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return .hello default=["world", null]"#)),

@@ -293,7 +293,7 @@ DotField: ast::Token = {
 
 Json: ast::Token = {
    JsonPrimitive,
-   "{" <literal:Literal> ":" <json:Json> "}" => ast::Token::JsonObject(literal, Box::new(json)),
+   "{" <literal:LiteralOrField> ":" <json:Json> "}" => ast::Token::JsonObject(literal, Box::new(json)),
    "[" <Comma<Json>> "]" => ast::Token::JsonArray(<>),
 };
 
