@@ -257,6 +257,7 @@ Return: ast::Token = {
 
 ReturnClause: ast::Token = {
     "{" <Comma<ReturnKeyValue>> "}" => ast::Token::ReturnObject(<>),
+    "{}" => ast::Token::ReturnObject(Vec::new()),
     "[" <Comma<ReturnClause>> "]" => ast::Token::ReturnArray(<>),
     JsonPrimitive,
     "." => ast::Token::All,
