@@ -286,6 +286,7 @@ PathPart: ast::Token = {
     "[" "]" => ast::Token::PathArray(None),
 };
 
+// Same as `Field`, but starting with a dot `.`
 DotField: ast::Token = {
     <with_dot:r"\.[\p{Alphabetic}_\$][\p{Alphabetic}\p{N}_\$]*"> => {
         ast::Token::JsonString(String::from(&with_dot[1..]))
