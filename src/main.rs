@@ -1,5 +1,36 @@
+use std::env;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+
 pub mod noise;
 pub mod ast;
+
+pub fn main() {
+    for argument in env::args().skip(1) {
+        println!("{}", argument);
+        parse_file(argument);
+    }
+}
+
+fn parse_file(filename: String) {
+    let error = format!("cannot open file: {}", filename);
+    let file = File::open(filename).expect(&error);
+    let file = BufReader::new(file);
+    for line in file.lines().filter_map(|result| result.ok()) {
+        if line.starts_with("#") {
+            continue;
+        }
+        println!("{}", line);
+        let parsed = noise::parse_Noise(&line);
+        match parsed {
+            Ok(_) => println!("ok"),
+            Err(_) => {
+                println!("{:?}", parsed);
+                std::process::exit(1);
+            },
+        }
+    }
+}
 
 #[test]
 fn noise() {
