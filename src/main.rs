@@ -389,7 +389,4 @@ fn noise() {
                r#"Ok(Noise(WordMatch(Some("hello"), Some(34), Parameter("world")), [], None, None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": > @world}"#)),
                r#"Ok(Noise(Greater(Some("hello"), Parameter("world")), [], None, None))"#);
-
-    let out = noise::parse_Noise(r#"find {"hello": == "world"} return ."#);
-    println!("out: {:?}", out);
 }
