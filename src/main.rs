@@ -264,6 +264,10 @@ fn noise() {
                r#"Ok(Noise(All, [], Some(ReturnObject([Object("hello", JsonBool(true))])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {hello: true}"#)),
                r#"Ok(Noise(All, [], Some(ReturnObject([Object("hello", JsonBool(true))])), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return []"#)),
+               r#"Ok(Noise(All, [], Some(ReturnArray([])), None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [ ]"#)),
+               r#"Ok(Noise(All, [], Some(ReturnArray([])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return [null, 12]"#)),
                r#"Ok(Noise(All, [], Some(ReturnArray([JsonNull, JsonNumber(12)])), None))"#);
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return {hello: true, another: "one"}"#)),
