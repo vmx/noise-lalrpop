@@ -349,6 +349,16 @@ fn noise() {
     assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {} return sum(.hello)"#)),
                r#"Ok(Noise(All, [], Some(Sum(Path([JsonString("hello")]))), None))"#);
 
+    // Parameters
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": == @world}"#)),
+               r#"Ok(Noise(Equal(Some("hello"), Parameter("world")), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": {"nested": == @world}}"#)),
+               r#"Ok(Noise(Object("hello", Equal(Some("nested"), Parameter("world"))), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": ~34= @world}"#)),
+               r#"Ok(Noise(WordMatch(Some("hello"), Some(34), Parameter("world")), [], None, None))"#);
+    assert_eq!(format!("{:?}", noise::parse_Noise(r#"find {"hello": > @world}"#)),
+               r#"Ok(Noise(Greater(Some("hello"), Parameter("world")), [], None, None))"#);
+
     let out = noise::parse_Noise(r#"find {"hello": == "world"} return ."#);
     println!("out: {:?}", out);
 }

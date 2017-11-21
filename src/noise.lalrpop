@@ -36,7 +36,7 @@ KeyValue: ast::Token = {
 
 KeyOperatorValue: ast::Token = {
     // Within an array the operator might not have a key
-    <key:(<LiteralOrField> ":")?> <op:Operator> <value:JsonPrimitive> => {
+    <key:(<LiteralOrField> ":")?> <op:Operator> <value:Value> => {
         match op {
             ast::OperatorType::Equal => ast::Token::Equal(key, Box::new(value)),
             ast::OperatorType::Greater => ast::Token::Greater(key, Box::new(value)),
@@ -57,6 +57,11 @@ KeyOperatorValue: ast::Token = {
     <key:(<LiteralOrField> ":")?> "&&" <bbox:Bbox> => {
         ast::Token::Intersect(key, Box::new(bbox))
     },
+};
+
+Value: ast::Token = {
+    JsonPrimitive,
+    Parameter,
 };
 
 Parenthesis: ast::Token = {
@@ -290,6 +295,13 @@ PathPart: ast::Token = {
 DotField: ast::Token = {
     <with_dot:r"\.[\p{Alphabetic}_\$][\p{Alphabetic}\p{N}_\$]*"> => {
         ast::Token::JsonString(String::from(&with_dot[1..]))
+    }
+};
+
+// Same as `Field`, but starting with an at sign `@`
+Parameter: ast::Token = {
+    <with_at:r"@[\p{Alphabetic}_\$][\p{Alphabetic}\p{N}_\$]*"> => {
+        ast::Token::Parameter(String::from(&with_at[1..]))
     }
 };
 
